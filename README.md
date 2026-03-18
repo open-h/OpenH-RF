@@ -4,7 +4,7 @@
 
 # OpenH-RF
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20Community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/ZX9xa7y2ds)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/gNTJeUsH2B)
 [![License](https://img.shields.io/badge/License-CC%20BY%204.0-4CAF50?style=for-the-badge)](https://creativecommons.org/licenses/by/4.0/)
 
 *Enabling advanced ultrasound imaging techniques and evaluation through free, openly available and high-quality ultrasound channel capture data.*
@@ -49,4 +49,4 @@ We aim to curate **20,000+** real and synthetic channel capture measurements spa
 
 - **Technical questions** — [openh.data+rf@gmail.com](mailto:openh.data+rf@gmail.com)
 - **Administrative questions** — [wsimson@nvidia.com](mailto:wsimson@nvidia.com)
-- **Community** — [Join our Discord](https://discord.gg/ZX9xa7y2ds)
+- **Community** — [Join our Discord](https://discord.gg/gNTJeUsH2B)
