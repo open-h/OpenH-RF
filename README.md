@@ -32,7 +32,7 @@ We aim to curate **20,000+** real and synthetic channel capture measurements spa
 | Milestone | Date |
 |-----------|------|
 | RFP released | March 16, 2026 |
-| Proposal submission deadline | May 10, 2026 |
+| Proposal submission deadline | June 10, 2026 |
 | Data collection window | May – July 2026 |
 | Model training & validation | August – September 2026 |
 | Public release (dataset + foundation model) | October 2026 |
