@@ -15,7 +15,7 @@
 
 ## About
 
-OpenH-RF is a collaborative initiative led by **Stanford University**, the **Technical University of Eindhoven** and **NVIDIA** to build a large-scale, openly licensed dataset of pre-beamformed (channel capture) medical ultrasound measurements. *The goal:* train general-purpose foundation models capable of multi-task *raw-to-insight* inference across echocardiography, general, fetal and transcranial imaging, blood flow measurement and ultrasound inverse problems.
+OpenH-RF is a collaborative initiative led by [Stanford University](https://med.stanford.edu/ultrasound.html), [Eindhoven University of Technology (TU/e)](https://www.tue.nl/en/research/research-groups/signal-processing-systems/biomedical-diagnostics) and [NVIDIA](https://www.nvidia.com/) to build a large-scale, openly licensed dataset of pre-beamformed (channel capture) medical ultrasound measurements. *The goal:* train general-purpose foundation models capable of multi-task *raw-to-insight* inference across echocardiography, general, fetal and transcranial imaging, blood flow measurement and ultrasound inverse problems.
 
 We aim to curate **20,000+** real and synthetic channel capture measurements spanning reconstruction, flow, quantitative imaging, motion estimation and interpretation tasks — released under **CC BY 4.0**.
 
@@ -41,7 +41,7 @@ We aim to curate **20,000+** real and synthetic channel capture measurements spa
 
 | Role | Name | Affiliation |
 |------|------|-------------|
-| AI Lead | Prof. Ruud J.G. van Sloun | TU Eindhoven |
+| AI Lead | Prof. Ruud J.G. van Sloun | TU/e |
 | Ultrasound Lead | Prof. Jeremy Dahl | Stanford University |
 | Industry Lead | Dr. Walter Simson | NVIDIA |
 
