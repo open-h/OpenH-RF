@@ -47,7 +47,7 @@ We aim to curate **20,000+** real and synthetic channel capture measurements spa
 
 ## Dataset Format
 
-The OpenH-RF format is documented in the [`zea` data-acquisition spec](https://zea--307.org.readthedocs.build/en/307/data-acquisition.html) (PR preview; will move to the main `zea` docs once merged). Each example below writes a single `.hdf5` file using [`zea`](https://github.com/tue-bmd/zea) and demonstrates the fields expected for a given modality:
+The OpenH-RF format is documented in the [`zea` data-acquisition spec](https://zea--307.org.readthedocs.build/en/307/data-acquisition.html). Each example below writes a single `.hdf5` file using [`zea`](https://github.com/tue-bmd/zea) and demonstrates the fields expected for a given modality:
 
 | Example | Modality |
 |---------|----------|
