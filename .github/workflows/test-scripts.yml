@@ -1,0 +1,30 @@
+name: Run example scripts
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-scripts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      KERAS_BACKEND: jax
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.11"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --extra test --frozen
+
+      - name: Run lightweight script tests
+        run: uv run pytest tests/ -m "not heavy" -v
