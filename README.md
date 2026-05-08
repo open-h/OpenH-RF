@@ -23,7 +23,7 @@ We aim to curate **20,000+** real and synthetic channel capture measurements spa
 
 1. **Review the RFP** — Read the [Request for Proposals](assets/OpenH-RF%20Request%20for%20Proposals%20(RFP).pdf) for technical scope, eligibility and evaluation criteria.
 2. **Submit a Proposal** — Prepare a concise proposal (≤ 5 pages) describing your dataset, collection methodology and target tasks. Submit to [this Google Form](https://forms.gle/tqiqYSnnar1AekB19).
-3. **Contribute Data** — Once approved, prepare your dataset in the OpenH-RF format (see [`examples/`](examples/) below) along with a datacard specifying the CC BY 4.0 license. Approved contributors are given a dedicated shared storage location (S3 or Google Drive) for delivery and a private Discord channel for coordination.
+3. **Contribute Data** — Once approved, prepare your dataset in the OpenH-RF format (see [`examples/`](examples/) below) along with a datacard specifying the CC BY 4.0 license. Approved contributors are given a dedicated shared storage location (S3 or Google Drive) for delivery and a Discord channel for coordination.
 4. **Co-author the Release** — Approved contributions are included in the public dataset and foundation model release — contributors are named co-authors in related publications upon project completion.
 
 ## Key Dates
