@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Example: Segmentation dataset using DatasetBuilder.
+"""Example: Segmentation dataset created with File.create.
 
-Shows DatasetBuilder fields relevant to segmentation tasks:
+Shows fields relevant to segmentation tasks:
 raw RF data, per-frame segmentation mask with class labels,
 and per-frame view annotations.
 
