@@ -12,6 +12,8 @@ dependencies = [
     "zea @ git+https://github.com/tue-bmd/zea.git@b04f3499cffe95d7fbed1926d8279c85224053b2",
     "numpy",
     "huggingface_hub",
+    "datasets",
+    "matplotlib",
     "jax",
 ]
 

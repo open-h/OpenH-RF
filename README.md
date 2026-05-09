@@ -23,7 +23,7 @@ We aim to curate **20,000+** real and synthetic channel capture measurements spa
 
 1. **Review the RFP** — Read the [Request for Proposals](assets/OpenH-RF%20Request%20for%20Proposals%20(RFP).pdf) for technical scope, eligibility and evaluation criteria.
 2. **Submit a Proposal** — Prepare a concise proposal (≤ 5 pages) describing your dataset, collection methodology and target tasks. Submit to [this Google Form](https://forms.gle/tqiqYSnnar1AekB19).
-3. **Contribute Data** — Once approved, prepare your dataset in the OpenH-RF format (see [`examples/`](examples/) below) along with a datacard specifying the CC BY 4.0 license. Approved contributors are given a dedicated shared storage location (S3 or Google Drive) for delivery and a Discord channel for coordination.
+3. **Contribute Data** — Once approved, prepare your dataset in the OpenH-RF format ([`zea` data-acquisition spec](https://zea--307.org.readthedocs.build/en/307/data-acquisition.html)) along with a datacard specifying the CC BY 4.0 license. Approved contributors are given a dedicated shared storage location (S3 or Google Drive) for delivery and a Discord channel for coordination.
 4. **Co-author the Release** — Approved contributions are included in the public dataset and foundation model release — contributors are named co-authors in related publications upon project completion.
 
 ## Key Dates
@@ -55,6 +55,7 @@ The OpenH-RF format is documented in the [`zea` data-acquisition spec](https://z
 | [`examples/saving/color_doppler_example.py`](examples/saving/color_doppler_example.py) | B-mode + color Doppler velocity map, ECG, annotations |
 | [`examples/saving/segmentation_map_example.py`](examples/saving/segmentation_map_example.py) | Raw RF data with per-frame segmentation masks and view labels |
 | [`examples/saving/verasonics_example.py`](examples/saving/verasonics_example.py) | Converting a Verasonics `.mat` workspace to OpenH-RF |
+| [`examples/nv-raw2insights-us/`](examples/nv-raw2insights-us/) | Streaming a sample from the public [NV-Raw2Insights-US](https://huggingface.co/datasets/nvidia/NV-Raw2Insights-US) dataset, converting to OpenH-RF, and beamforming back to a B-mode |
 | [`examples/save_pipeline_example.py`](examples/save_pipeline_example.py) | Saving a `zea` processing pipeline as a reusable YAML config |
 
 ## Setup

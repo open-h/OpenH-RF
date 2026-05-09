@@ -22,6 +22,7 @@ LIGHT_SCRIPTS = [
 ]
 HEAVY_SCRIPTS = [
     ROOT / "examples" / "saving" / "verasonics_example.py",
+    ROOT / "examples" / "nv-raw2insights-us" / "convert_nv_raw2insights_us.py",
 ]
 
 
