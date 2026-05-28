@@ -49,7 +49,7 @@ Environment setup is in the [main README](../../README.md). After `uv sync` and
 # 1. stream one sample from HF, write the zea-format HDF5
 uv run python examples/nv-raw2insights-us/convert.py
 
-# 2. load pipeline.yaml, beamform the raw channel data, write the 7-panel PNG
+# 2. beamform the raw channel data (writes pipeline.yaml + the 7-panel PNG)
 uv run python examples/nv-raw2insights-us/reconstruct.py
 ```
 
@@ -128,9 +128,10 @@ Not applicable — fully synthetic phantom data; no human or animal subjects, no
 
 ## Data Validation
 
-[`reconstruct.py`](reconstruct.py) loads [`pipeline.yaml`](pipeline.yaml) — a
-`zea.Pipeline` of DAS beamforming → envelope detection → normalization →
-log-compression — and reconstructs a B-mode directly from `raw_data`. Comparing
+[`reconstruct.py`](reconstruct.py) defines a `zea.Pipeline` of DAS beamforming →
+envelope detection → normalization → log-compression, saves it to
+[`pipeline.yaml`](pipeline.yaml), and reconstructs a B-mode directly from
+`raw_data`. Comparing
 it against the stored B-mode is a sanity check that the acquisition parameters
 and probe geometry are recorded correctly, and serves as a reproducible reference
 reconstruction. The script also renders the speed-of-sound map, a SoS-corrected

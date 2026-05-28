@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 """Beamform an openh-rf HDF5 sample produced by convert.py.
 
-Loads raw IQ + scan from the file via zea.File, applies the reconstruction
-pipeline defined in pipeline.yaml (DAS -> envelope -> normalize -> log-compress),
-and renders a 7-panel figure (IQ energy, stored DAS B-mode, DBUA B-mode,
-zea-reconstructed B-mode, zea SoS-corrected B-mode, speed of sound, segmentation).
+Loads raw IQ + scan from the file via zea.File, builds the reconstruction
+pipeline inline (DAS -> envelope -> normalize -> log-compress), saves it to
+pipeline.yaml for reuse, and renders a 7-panel figure (IQ energy, stored DAS
+B-mode, DBUA B-mode, zea-reconstructed B-mode, zea SoS-corrected B-mode, speed
+of sound, segmentation).
 
 This is the reference reconstruction / data-validation script for the
 submission: it reproduces a representative B-mode from the raw channel data,
@@ -30,6 +31,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import zea
+from zea.ops import Beamform, EnvelopeDetect, LogCompress, Normalize
 
 HERE = Path(__file__).parent
 DEFAULT_INPUT = Path("nv_raw2insights_us_sample.hdf5")
@@ -46,7 +48,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    parser.add_argument("--pipeline", type=Path, default=DEFAULT_PIPELINE)
+    parser.add_argument(
+        "--pipeline",
+        type=Path,
+        default=DEFAULT_PIPELINE,
+        help="Path to write the saved pipeline YAML",
+    )
     args = parser.parse_args()
 
     if not args.input.exists():
@@ -73,9 +80,21 @@ def main():
 
     print(f"raw_data: {raw.shape}")
 
-    # Reconstruction pipeline (DAS -> envelope -> normalize -> log-compress)
-    # is defined in pipeline.yaml so it can be shared and reproduced without code.
-    pipeline = zea.Pipeline.from_path(str(args.pipeline))
+    # DAS -> envelope -> normalize -> log-compress. Saved to pipeline.yaml so the
+    # same chain can be reused without code (zea.Pipeline.from_path).
+    pipeline = zea.Pipeline(
+        operations=[
+            Beamform(
+                beamformer="delay_and_sum",
+                num_patches=200,  # raise if you hit out-of-memory during beamforming
+            ),
+            EnvelopeDetect(),
+            Normalize(),
+            LogCompress(),
+        ]
+    )
+    pipeline.to_yaml(str(args.pipeline))
+    print(f"Saved pipeline to {args.pipeline}")
     params = pipeline.prepare_parameters(probe, scan)
     outputs = pipeline(**{pipeline.key: raw}, **params)
     recon = keras.ops.convert_to_numpy(outputs[pipeline.output_key])[0]
