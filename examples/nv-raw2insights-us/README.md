@@ -1,3 +1,24 @@
+---
+pretty_name: NV-Raw2Insights-US Simulations
+license: cc-by-4.0
+task_categories:
+  - image-segmentation
+  - other
+tags:
+  - ultrasound
+  - rf
+  - openh-rf
+  - medical-imaging
+  - simulation
+  - beamforming
+  - sound-speed-estimation
+  - phase-aberration
+language:
+  - en
+size_categories:
+  - n<1K
+---
+
 # NV-Raw2Insights-US → OpenH-RF
 
 A worked **submission example**: convert one sample of the public
