@@ -1,12 +1,18 @@
+# Reconstruction pipeline recipe for the NV-Raw2Insights-US example.
+#
+# This file is written by reconstruct.py (pipeline.to_yaml) as a shareable
+# artifact — the pipeline is defined in code, not loaded from here. It records
+# the DAS -> envelope -> normalize -> log-compress operation chain so the recipe
+# can be inspected or reused; the acquisition/grid parameters live in code.
+
 pipeline:
-    operations:
-    -   name: beamform
-        params:
-            num_patches: 200
-    - envelope_detect
-    -   name: normalize
-        params:
-            output_range:
-            - 0.0
-            - 1.0
-    - log_compress
+  operations:
+    - name: beamform
+      params:
+        beamformer: delay_and_sum
+        num_patches: 200
+    - name: envelope_detect
+    - name: normalize
+      params:
+        output_range: [0.0, 1.0]
+    - name: log_compress

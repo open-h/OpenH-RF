@@ -49,7 +49,7 @@ Environment setup is in the [main README](../../README.md). After `uv sync` and
 # 1. stream one sample from HF, write the zea-format HDF5
 uv run python examples/nv-raw2insights-us/convert.py
 
-# 2. beamform the raw channel data (writes pipeline.yaml + the 7-panel PNG)
+# 2. beamform the raw channel data in code (writes pipeline.yaml + the 7-panel PNG)
 uv run python examples/nv-raw2insights-us/reconstruct.py
 ```
 
@@ -102,19 +102,24 @@ Submitted in the [`zea` file format](https://zea.readthedocs.io/en/latest/data-a
 (one HDF5 file per acquisition). `convert.py` maps the source HF Arrow features
 onto `zea` groups: raw IQ channel data, stored B-modes, the sound-speed map, the
 segmentation, scan parameters, and the per-sample phase-error metric. B-modes are
-log-compressed to 8-bit before storage.
+log-compressed to 8-bit before storage. Each spatial map carries a per-pixel
+`coordinates` array (the point-based openh-rf spec) rather than a bounding-box
+extent; `convert.py` builds these with `zea.beamform.pixelgrid.cartesian_pixel_grid`.
 
 Per-sample contents of the converted HDF5:
 
 | Group / field | Shape | Dtype | Units | Description |
 |---|---|---|---|---|
 | `data/raw_data` | `[1, n_tx, n_ax, n_el, 2]` | float32 | -- | Raw baseband IQ channel data; last axis is `[I, Q]` |
-| `data/image` | `[1, z, x]` | uint8 | dB | Stored DAS B-mode (log-compressed) + `extent` |
-| `data/bmode_focused` | `[1, z, x]` | uint8 | dB | Stored DBUA aberration-corrected B-mode + `extent` |
-| `data/sos_map` | `[1, 32, 32]` | float32 | m/s | Ground-truth speed-of-sound map + `extent` |
-| `data/segmentation` | `[1, z, x, 1, 2]` | bool | -- | Cyst masks; `labels = [background, inclusion]` + `extent` |
+| `data/image` | `[1, z, x]` (+ `coordinates` `[z, x, 3]`) | uint8 | dB | Stored DAS B-mode (log-compressed) |
+| `data/bmode_focused` | `[1, z, x]` (+ `coordinates` `[z, x, 3]`) | uint8 | dB | Stored DBUA aberration-corrected B-mode |
+| `data/sos_map` | `[1, z, x]` (+ `coordinates` `[z, x, 3]`) | float32 | m/s | Ground-truth speed-of-sound map (coarser grid than the B-mode) |
+| `data/segmentation` | `[1, z, x, 2]` (+ `coordinates` `[z, x, 3]`) | bool | -- | Cyst masks; `labels = [background, inclusion]` |
 | `scan/*` | -- | -- | -- | Probe geometry, sampling/center/demod frequency, t0, sound speed, … |
 | `metrics/common_midpoint_phase_error` | `[1]` | float32 | radians | Per-sample phase aberration error |
+
+All `coordinates` arrays are per-pixel Cartesian positions in metres, last axis
+`[x, y, z]` (y = 0 for these 2-D maps).
 
 ## Dataset Quantification
 
@@ -128,14 +133,15 @@ Not applicable — fully synthetic phantom data; no human or animal subjects, no
 
 ## Data Validation
 
-[`reconstruct.py`](reconstruct.py) defines a `zea.Pipeline` of DAS beamforming →
-envelope detection → normalization → log-compression, saves it to
-[`pipeline.yaml`](pipeline.yaml), and reconstructs a B-mode directly from
-`raw_data`. Comparing
-it against the stored B-mode is a sanity check that the acquisition parameters
-and probe geometry are recorded correctly, and serves as a reproducible reference
-reconstruction. The script also renders the speed-of-sound map, a SoS-corrected
-reconstruction, and the segmentation overlay (7-panel figure).
+[`reconstruct.py`](reconstruct.py) builds a `zea.Pipeline` of DAS beamforming →
+envelope detection → normalization → log-compression **in code** and reconstructs
+a B-mode directly from `raw_data` — showing the raw-to-image flow without any
+config file. It also saves the pipeline to [`pipeline.yaml`](pipeline.yaml) as a
+shareable recipe. Comparing the reconstruction against the stored B-mode is a
+sanity check that the acquisition parameters and probe geometry are recorded
+correctly, and serves as a reproducible reference reconstruction. The script also
+renders the speed-of-sound map, a SoS-corrected reconstruction, and the
+segmentation overlay (7-panel figure).
 
 ## Known Issues
 
