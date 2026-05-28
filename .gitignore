@@ -1,5 +1,6 @@
 *.hdf5
 *.mat
+*.png
 .venv/
 __pycache__/
 .env
