@@ -4,11 +4,14 @@ to openh-rf HDF5 via File.create.
 
 Source: https://huggingface.co/datasets/nvidia/NV-Raw2Insights-US
 
-Reproducible without a local copy: `datasets` streams a single example from
-the remote parquet shards.
+This is an *example* helper: it shows how the published HF dataset maps onto the
+openh-rf (zea) file format. A submission's required files are the .hdf5 data,
+reconstruct.py, pipeline.yaml, README.md and LICENSE; this converter is not part
+of that set. It is reproducible without a local copy -- `datasets` streams a
+single example from the remote parquet shards.
 
 Usage:
-    python examples/nv-raw2insights-us/convert_nv_raw2insights_us.py
+    python examples/nv-raw2insights-us/convert.py
 
 Note:
     Requires `datasets` library (`pip install datasets`)

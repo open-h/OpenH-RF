@@ -1,13 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Beamform an openh-rf HDF5 sample produced by convert_nv_raw2insights_us.py.
+"""Beamform an openh-rf HDF5 sample produced by convert.py.
 
-Loads raw IQ + scan from the file via zea.File, runs DAS -> envelope ->
-normalize -> log-compress, and renders a 7-panel figure in the same style as
-sample_visualization.png (IQ energy, stored DAS B-mode, DBUA B-mode,
+Loads raw IQ + scan from the file via zea.File, applies the reconstruction
+pipeline defined in pipeline.yaml (DAS -> envelope -> normalize -> log-compress),
+and renders a 7-panel figure (IQ energy, stored DAS B-mode, DBUA B-mode,
 zea-reconstructed B-mode, zea SoS-corrected B-mode, speed of sound, segmentation).
 
+This is the reference reconstruction / data-validation script for the
+submission: it reproduces a representative B-mode from the raw channel data,
+confirming the acquisition parameters and geometry are recorded correctly.
+
 Usage:
-    python examples/nv-raw2insights-us/reconstruct_nv_raw2insights_us.py \
+    python examples/nv-raw2insights-us/reconstruct.py \
         --input nv_raw2insights_us_sample.hdf5
 """
 
@@ -21,10 +25,11 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import zea
-from zea.ops import Beamform, EnvelopeDetect, LogCompress, Normalize
 
+HERE = Path(__file__).parent
 DEFAULT_INPUT = Path("nv_raw2insights_us_sample.hdf5")
 DEFAULT_OUTPUT = Path("nv_raw2insights_us_reconstructed.png")
+DEFAULT_PIPELINE = HERE / "pipeline.yaml"
 
 
 def ext_to_imshow_mm(ext):
@@ -36,11 +41,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--pipeline", type=Path, default=DEFAULT_PIPELINE)
     args = parser.parse_args()
 
     if not args.input.exists():
         raise FileNotFoundError(
-            f"{args.input} not found. Run convert_nv_raw2insights_us.py first."
+            f"{args.input} not found. Run convert.py first."
         )
 
     zea.init_device()
@@ -62,17 +68,9 @@ def main():
 
     print(f"raw_data: {raw.shape}")
 
-    pipeline = zea.Pipeline(
-        operations=[
-            Beamform(
-                beamformer="delay_and_sum",
-                num_patches=200,  # increase with out-of-memory error
-            ),
-            EnvelopeDetect(),
-            Normalize(),
-            LogCompress(),
-        ]
-    )
+    # Reconstruction pipeline (DAS -> envelope -> normalize -> log-compress)
+    # is defined in pipeline.yaml so it can be shared and reproduced without code.
+    pipeline = zea.Pipeline.from_path(str(args.pipeline))
     params = pipeline.prepare_parameters(probe, scan)
     outputs = pipeline(**{pipeline.key: raw}, **params)
     recon = keras.ops.convert_to_numpy(outputs[pipeline.output_key])[0]
