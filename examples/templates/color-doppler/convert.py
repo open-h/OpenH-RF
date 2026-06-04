@@ -1,6 +1,6 @@
 """Convert: create a synthetic duplex dataset with B-mode and Doppler tracks.
 
-Demonstrates Zea multi-track storage for duplex imaging by writing separate
+Demonstrates zea multi-track storage for duplex imaging by writing separate
 tracks for B-mode and color-Doppler acquisitions in one HDF5 file.
 
 All data is synthetic (random noise). Replace the arrays with real acquisitions
@@ -13,9 +13,8 @@ Usage:
 from pathlib import Path
 
 import numpy as np
-from zea.beamform.pixelgrid import cartesian_pixel_grid
-
 from zea import File
+from zea.beamform.pixelgrid import cartesian_pixel_grid
 
 OUTPUT = Path(__file__).parent / "color_doppler.hdf5"
 
