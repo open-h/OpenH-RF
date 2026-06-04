@@ -44,9 +44,9 @@ pipeline = zea.Pipeline(
     ],
 )
 
-pipeline.to_yaml("config.yaml")
+pipeline.to_yaml("pipeline.yaml")
 
-config = zea.Config.from_path("config.yaml")
+config = zea.Config.from_path("pipeline.yaml")
 print(config)
 
 # <Config {'pipeline': {'operations': [{'name': 'demodulate'}, {'name': 'downsample'}, {'name': 'beamform', 'params': {'beamformer': 'delay_multiply_and_sum', 'enable_pfield': True}}, {'name': 'envelope_detect'}, {'name': 'normalize'}, {'name': 'log_compress'}]}}>

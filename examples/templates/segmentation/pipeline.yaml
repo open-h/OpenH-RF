@@ -1,0 +1,21 @@
+# Beamforming config for the segmentation example.
+#
+# The dataset contains plane-wave RF data (n_ch=1) from a linear array.
+
+parameters:
+  selected_transmits: all
+  n_ch: 1               # RF data
+  grid_size_x: 200      # lateral pixels
+  grid_size_z: 400      # axial pixels
+  xlims: [-0.015, 0.015] # metres
+  zlims: [0.001, 0.03]   # metres
+
+pipeline:
+  operations:
+    - name: beamform
+      params:
+        beamformer: delay_and_sum
+        num_patches: 100
+    - name: envelope_detect
+    - name: normalize
+    - name: log_compress

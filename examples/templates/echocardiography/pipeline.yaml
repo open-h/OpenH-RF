@@ -1,0 +1,25 @@
+# Beamforming config for the echocardiography example.
+#
+# The dataset contains focused-transmit RF data (n_ch=1) from a phased array.
+
+scan:
+    selected_transmits: all
+    n_ch: 1               # RF data
+    grid_size_x: 200      # lateral pixels
+    grid_size_z: 400      # axial pixels
+    pixels_per_wavelength: 2
+    f_number: 0.6
+    grid_type: polar # beamform on a polar grid
+    polar_limits: [-0.785398, 0.785398]
+    zlims: [0.0, 0.04]  # metres
+
+pipeline:
+    operations:
+        - name: beamform
+          params:
+              beamformer: delay_and_sum
+              num_patches: 100
+        - envelope_detect
+        - normalize
+        - log_compress
+        - scan_convert # scan convert to Cartesian grid for display
