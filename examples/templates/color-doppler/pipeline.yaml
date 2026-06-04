@@ -2,8 +2,6 @@
 #
 # The dataset contains plane-wave RF data (n_ch=1) from a linear array.
 # This config beamforms the raw channel data to produce a B-mode image.
-# (Color Doppler velocity maps are stored as a separate pre-computed field
-#  and do not require beamforming.)
 
 parameters:
   selected_transmits: all
