@@ -25,6 +25,7 @@ from pathlib import Path
 # bare `uv run` without first exporting KERAS_BACKEND. An explicit value wins.
 os.environ.setdefault("KERAS_BACKEND", "jax")
 
+import keras
 import matplotlib
 
 matplotlib.use("Agg")
@@ -108,7 +109,13 @@ def main():
     print(f"Saved pipeline recipe to {args.pipeline}")
 
     inputs = pipeline.prepare_parameters(params)
-    recon = np.array(pipeline(data=raw, **inputs)["data"])[0]
+    # keras.ops.convert_to_numpy (not np.array) so the output tensor is pulled
+    # off the device regardless of backend — e.g. PyTorch needs an explicit
+    # .cpu(), which np.array would not do.
+    recon = keras.ops.convert_to_numpy(pipeline(data=raw, **inputs)["data"])[0]
+    # The reconstruction grid was derived from img_coords above, so its mpl
+    # extent equals coords_to_imshow_mm(img_coords) — params.extent_imshow is
+    # just the same thing zea already computed for us.
     recon_ext = [v * 1e3 for v in params.extent_imshow]  # metres -> mm
     print(f"Reconstructed: {recon.shape}")
 
@@ -118,7 +125,7 @@ def main():
     sos_frame = sos[0] if sos.ndim == 3 else sos[0, :, :, 0]
     sos_grid_x = np.ascontiguousarray(sos_coords[0, :, 0], dtype=np.float32)
     sos_grid_z = np.ascontiguousarray(sos_coords[:, 0, 2], dtype=np.float32)
-    recon_sos = np.array(
+    recon_sos = keras.ops.convert_to_numpy(
         pipeline(
             data=raw,
             sos_map=sos_frame,
@@ -185,8 +192,11 @@ def main():
     axes[6].imshow(
         focused[0], aspect="auto", cmap="gray", extent=coords_to_imshow_mm(focused_coords)
     )
+    # seg is (n_frames, z, x, n_labels); pick the "inclusion" channel by name
+    # rather than a hard-coded index, so it stays correct if label order changes.
+    inclusion_idx = list(labels).index("inclusion")
     axes[6].imshow(
-        seg[0, :, :, 1],  # (n_frames, z, x, n_labels); label 1 = inclusion
+        seg[0, :, :, inclusion_idx],
         aspect="auto",
         cmap="Reds",
         alpha=0.4,

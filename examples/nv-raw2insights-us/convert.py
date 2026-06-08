@@ -83,6 +83,13 @@ def convert_sample(sample: dict, output_path: Path) -> None:
 
     probe_geometry = elpos.T
 
+    # The B-mode, focused B-mode, and segmentation share one image grid, so they
+    # reuse the same per-pixel coordinates below. Guard that assumption.
+    assert seg_map.shape == bmode.shape, (
+        f"segmentation {seg_map.shape} and B-mode {bmode.shape} must share the "
+        "image grid (they reuse the same coordinates)"
+    )
+
     bmode_values = bmode_to_uint8(bmode)[np.newaxis]  # (1, z, x)
     bmode_focused_values = bmode_to_uint8(bmode_focused)[np.newaxis]
     sos_values = sos_map[np.newaxis]  # (1, z, x)
@@ -156,6 +163,8 @@ def convert_sample(sample: dict, output_path: Path) -> None:
         scan=scan,
         metadata=metadata,
         metrics=metrics,
+        # In this zea version the probe (incl. probe_geometry) is passed here, not
+        # in `scan`; the old `probe_name=` argument is no longer accepted.
         probe={"name": "Simulated 10L4 Transducer", "probe_geometry": probe_geometry},
         description="NV-Raw2Insights-US FSA phantom simulation (simulated in k-Wave)",
         overwrite=True,
