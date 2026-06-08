@@ -47,15 +47,15 @@ We aim to curate **20,000+** real and synthetic channel capture measurements spa
 
 ## Dataset Format
 
-The OpenH-RF format is implemented using the [`zea`](https://github.com/tue-bmd/zea) ultrasound toolbox. See the `zea` documentation for the [data specification](https://zea--358.org.readthedocs.build/en/358/data-acquisition.html). Each example below writes a single `.hdf5` file using `zea` and demonstrates the fields expected for a given modality:
+The OpenH-RF format is implemented using the [`zea`](https://github.com/tue-bmd/zea) ultrasound toolbox. See the `zea` documentation for the [data specification](https://zea--358.org.readthedocs.build/en/358/data-acquisition.html). The [`examples/templates/`](examples/templates/) directories are starting points for a submission — each has a `convert.py` (data → openh-rf `.hdf5`), a `reconstruct.py` (raw channel data → B-mode), and a `pipeline.yaml`:
 
 | Example | Modality |
 |---------|----------|
-| [`examples/saving/echocardiography_example.py`](examples/saving/echocardiography_example.py) | Cardiac ultrasound with strain map, ECG, demographics, annotations, quality metrics |
-| [`examples/saving/color_doppler_example.py`](examples/saving/color_doppler_example.py) | B-mode + color Doppler velocity map, ECG, annotations |
-| [`examples/saving/segmentation_map_example.py`](examples/saving/segmentation_map_example.py) | Raw RF data with per-frame segmentation masks and view labels |
-| [`examples/saving/verasonics_example.py`](examples/saving/verasonics_example.py) | Converting a Verasonics `.mat` workspace to OpenH-RF |
-| [`examples/nv-raw2insights-us/`](examples/nv-raw2insights-us/) | Streaming a sample from the public [NV-Raw2Insights-US](https://huggingface.co/datasets/nvidia/NV-Raw2Insights-US) dataset, converting to OpenH-RF, and beamforming back to a B-mode |
+| [`examples/templates/echocardiography/`](examples/templates/echocardiography/) | Cardiac (phased array): focused transmits, ECG + clinical metadata, annotations |
+| [`examples/templates/color-doppler/`](examples/templates/color-doppler/) | Linear array (plane-wave): B-mode + color Doppler velocity map, ECG, annotations |
+| [`examples/templates/segmentation/`](examples/templates/segmentation/) | Raw RF data with per-frame segmentation masks and view labels |
+| [`examples/templates/verasonics/`](examples/templates/verasonics/) | Converting a real Verasonics `.mat` workspace to OpenH-RF |
+| [`examples/nv-raw2insights-us/`](examples/nv-raw2insights-us/) | Worked example on a real public dataset: stream a sample from [NV-Raw2Insights-US](https://huggingface.co/datasets/nvidia/NV-Raw2Insights-US), convert to OpenH-RF, and beamform raw channel data back to a B-mode |
 | [`examples/save_pipeline_example.py`](examples/save_pipeline_example.py) | Saving a `zea` processing pipeline as a reusable YAML config |
 
 ## Setup
@@ -67,7 +67,7 @@ git clone https://github.com/open-h/OpenH-RF
 cd OpenH-RF
 uv sync
 export KERAS_BACKEND=jax
-uv run python examples/saving/echocardiography_example.py
+uv run python examples/save_pipeline_example.py
 ```
 
 `uv sync` creates `.venv/` and installs dependencies listed in `pyproject.toml`. Run any script with `uv run python <script>.py`, or activate the venv with `source .venv/bin/activate`.
