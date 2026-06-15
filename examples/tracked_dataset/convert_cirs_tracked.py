@@ -18,22 +18,6 @@ from zea.ops import (
 )
 
 
-def load_imaging(path):
-    """Read the raw RF frames, image timestamps, and scan metadata."""
-    with h5py.File(path, "r") as handle:
-        raw_data = np.asarray(handle["raw_data"], dtype=np.float32)
-        # One absolute nanosecond timestamp per ultrasound image frame.
-        image_times_ns = np.asarray(handle["time_stamp"], dtype=np.int64)
-        scan = {
-            key: np.asarray(value)
-            for key, value in handle["scan"].items()
-            if key != "zlims"
-        }
-        zlims = np.asarray(handle["scan"]["zlims"], dtype=np.float32)
-
-    return raw_data, image_times_ns, scan, zlims
-
-
 def load_probe_pose(path, image_times_ns):
     """Parse timestamped 4x4 tracking matrices into ``zea`` probe-pose metadata."""
     rows = [
@@ -104,19 +88,41 @@ def main():
             repo_type="dataset",
         )
     )
-    raw_data, image_times_ns, scan, zlims = load_imaging(imaging_path)
-    probe = {
-        "name": "simulated_probe",
-        "type": "linear",
-        "probe_geometry": scan.pop("probe_geometry"),
-        "element_width": scan.pop("element_width"),
-        "probe_center_frequency": scan["center_frequency"],
-    }
-    # Store the image cadence as the scan transmit sequence.
-    frame_intervals_ns = np.diff(image_times_ns)
-    scan["time_to_next_transmit"] = (frame_intervals_ns * 1e-9).astype(np.float32)
+    """Read the raw RF frames, image timestamps, and scan metadata."""
+    with h5py.File(imaging_path, "r") as handle:
+        raw_data = np.asarray(handle["raw_data"], dtype=np.float32)
+        # One absolute nanosecond timestamp per ultrasound image frame.
+        image_times_ns = np.asarray(handle["time_stamp"], dtype=np.int64)
+        source_scan = handle["scan"]
+        scan = {
+            "azimuth_angles": np.asarray(source_scan["azimuth_angles"]),
+            "center_frequency": np.asarray(source_scan["center_frequency"]),
+            "demodulation_frequency": np.asarray(source_scan["demodulation_frequency"]),
+            "sampling_frequency": np.asarray(source_scan["sampling_frequency"]),
+            "focus_distances": np.asarray(source_scan["focus_distances"]),
+            "initial_times": np.asarray(source_scan["initial_times"]),
+            "polar_angles": np.asarray(source_scan["polar_angles"]),
+            "t0_delays": np.asarray(source_scan["t0_delays"]),
+            "time_to_next_transmit": (np.diff(image_times_ns) * 1e-9).astype(np.float32),
+            "transmit_origins": np.asarray(source_scan["transmit_origins"]),
+            "tx_apodizations": np.asarray(source_scan["tx_apodizations"]),
+        }
+        zlims = np.asarray(handle["scan"]["zlims"], dtype=np.float32)
+
+        probe = {
+            "name": "simulated_probe",
+            "type": "linear",
+            "probe_geometry": np.asarray(source_scan["probe_geometry"]),
+            "element_width": np.asarray(source_scan["element_width"]),
+            "probe_center_frequency": scan["center_frequency"],
+        }
 
     probe_pose = load_probe_pose(tracking_path, image_times_ns)
+
+    metadata = {
+        "subject": {"id": "cirs_phantom", "type": "phantom"},
+        "probe_pose": probe_pose,
+    }
 
     # Store raw RF plus scan metadata, and attach independently sampled tracking.
     File.create(
@@ -124,10 +130,7 @@ def main():
         tracks=[{"data": {"raw_data": raw_data}, "scan": scan}],
         track_schedule=np.zeros(raw_data.shape[0] * raw_data.shape[1], dtype=np.int32),
         probe=probe,
-        metadata={
-            "subject": {"id": "cirs_phantom", "type": "phantom"},
-            "probe_pose": probe_pose,
-        },
+        metadata=metadata,
         description="Simulated UltraRay CIRS RF acquisition",
         overwrite=True,
     )
