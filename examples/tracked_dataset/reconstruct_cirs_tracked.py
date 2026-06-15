@@ -1,4 +1,4 @@
-"""Beamform the tracked CIRS ZEA sample and plot the probe trajectory.
+"""Beamform the tracked CIRS zea sample and plot the probe trajectory.
 
 Loads raw RF + scan + probe pose from the file, runs the configured beamforming
 pipeline, and renders one B-mode image plus x/y/z probe translation at the
@@ -135,7 +135,7 @@ def main():
         if i == 0:
             axis.legend(loc="upper right", fontsize=8, frameon=False)
 
-    fig.suptitle("CIRS ZEA reconstruction and tracked probe trajectory", y=0.98)
+    fig.suptitle("CIRS zea reconstruction and tracked probe trajectory", y=0.98)
     plt.tight_layout()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(args.output, dpi=150, bbox_inches="tight")

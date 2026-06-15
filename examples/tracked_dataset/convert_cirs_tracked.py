@@ -1,4 +1,4 @@
-"""Convert the tracked CIRS raw HF files to a local OpenH-RF/ZEA dataset."""
+"""Convert the tracked CIRS raw HF files to a local OpenH-RF/zea dataset."""
 
 import argparse
 from pathlib import Path
@@ -35,7 +35,7 @@ def load_imaging(path):
 
 
 def load_probe_pose(path, image_times_ns):
-    """Parse timestamped 4x4 tracking matrices into ZEA probe-pose metadata."""
+    """Parse timestamped 4x4 tracking matrices into ``zea`` probe-pose metadata."""
     rows = [
         line.split()
         for line in path.read_text(encoding="utf-8").splitlines()
@@ -46,7 +46,7 @@ def load_probe_pose(path, image_times_ns):
     pose_times_ns = np.asarray([row[16] for row in rows], dtype=np.int64)
 
     probe_pose = {
-        # Source tracking translations are millimetres; ZEA stores metres.
+        # Source tracking translations are millimetres; zea stores metres.
         "translation": (matrices[:, 3, :3] * 1e-3).astype(np.float32),
         "rotation": Rotation.from_matrix(matrices[:, :3, :3]).as_quat().astype(np.float32),
         "rotation_representation": "quaternion_xyzw",
@@ -89,7 +89,7 @@ def main():
     config_path = output_path.parent / "config.yaml"
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Pull the raw source files from HF; the converted ZEA files are written locally.
+    # Pull the raw source files from HF; the converted zea files are written locally.
     imaging_path = Path(
         hf_hub_download(
             repo_id=hf_repo,
