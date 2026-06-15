@@ -26,9 +26,9 @@ def coordinates_to_imshow_extent_mm(coordinates):
 
 
 def translations_at_frame_times(pose, frame_times_s):
-    translations = np.asarray(pose.translation, dtype=np.float32)
+    translations = pose.translation
     if pose.timestamps is not None:
-        pose_times_s = float(pose.start_time_offset) + np.asarray(pose.timestamps)
+        pose_times_s = float(pose.start_time_offset) + pose.timestamps
     else:
         pose_times_s = float(pose.start_time_offset) + np.arange(len(translations)) / float(
             pose.sampling_frequency
@@ -70,17 +70,17 @@ def main():
         frame_count = track.data.raw_data.shape[0]
         frame_times_s = np.asarray(track.timestamps[:, 0], dtype=np.float64)
         parameters = track.load_parameters(**config.parameters)
-        raw = np.asarray(track.data.raw_data[args.frame_index : args.frame_index + 1])
+        raw = track.data.raw_data[args.frame_index : args.frame_index + 1]
         metadata = f.metadata
 
     print(f"raw_data frame: {raw.shape} ({frame_count} frames in file)")
 
     pipeline = zea.Pipeline.from_config(config)
     params = pipeline.prepare_parameters(parameters)
-    outputs = pipeline(return_numpy=True, **{pipeline.key: raw}, **params)
+    outputs = pipeline(**{pipeline.key: raw}, **params, return_numpy=True)
     bmode_map = {
         "values": outputs[pipeline.output_key][0],
-        "coordinates": np.asarray(params["grid"]),
+        "coordinates": outputs["grid"],
     }
     bmode_display = zea.display.to_8bit(bmode_map["values"], pillow=False)
     print(f"Reconstructed: {bmode_map['values'].shape}")

@@ -53,7 +53,7 @@ def load_probe_pose(path, image_times_ns):
         "start_time_offset": np.float32((pose_times_ns[0] - image_times_ns[0]) / 1e9),
         "timestamps": ((pose_times_ns - pose_times_ns[0]) * 1e-9).astype(np.float32),
     }
-    return probe_pose, pose_times_ns
+    return probe_pose
 
 
 def write_config(path, zlims):
@@ -116,7 +116,7 @@ def main():
     frame_intervals_ns = np.diff(image_times_ns)
     scan["time_to_next_transmit"] = (frame_intervals_ns * 1e-9).astype(np.float32)
 
-    probe_pose, pose_times_ns = load_probe_pose(tracking_path, image_times_ns)
+    probe_pose = load_probe_pose(tracking_path, image_times_ns)
 
     # Store raw RF plus scan metadata, and attach independently sampled tracking.
     File.create(

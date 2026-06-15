@@ -63,9 +63,9 @@ def camera_from_direction(image, direction, zoom=1.1):
 
 def interpolate_frame_poses(pose, frame_times):
     """Interpolate tracked probe poses at image-frame timestamps."""
-    translations = np.asarray(pose.translation, dtype=np.float32)
+    translations = pose.translation
     if pose.timestamps is not None:
-        pose_times = float(pose.start_time_offset) + np.asarray(pose.timestamps)
+        pose_times = float(pose.start_time_offset) + pose.timestamps
     else:
         pose_times = float(pose.start_time_offset) + np.arange(len(translations)) / float(
             pose.sampling_frequency
@@ -84,7 +84,7 @@ def interpolate_frame_poses(pose, frame_times):
             for axis in range(translations.shape[1])
         ]
     )
-    rotations = Rotation.from_quat(np.asarray(pose.rotation, dtype=np.float32))
+    rotations = Rotation.from_quat(pose.rotation)
     interpolated_rotations = Slerp(pose_times, rotations)(frame_times)
     return interpolated_translations.astype(np.float32), interpolated_rotations
 
@@ -95,17 +95,17 @@ def beamform_frames(input_path, config, frame_indices):
     with zea.File(input_path) as f:
         track = f.tracks[0]
         parameters = track.load_parameters(**config.parameters)
-        raw = np.asarray(track.data.raw_data[frame_indices])
+        raw = track.data.raw_data[frame_indices]
         metadata = f.metadata
 
     print(f"raw_data frames: {raw.shape}")
     pipeline = zea.Pipeline.from_config(config)
     params = pipeline.prepare_parameters(parameters)
-    outputs = pipeline(return_numpy=True, **{pipeline.key: raw}, **params)
+    outputs = pipeline(**{pipeline.key: raw}, **params, return_numpy=True)
 
     bmode_map = {
         "values": outputs[pipeline.output_key],
-        "coordinates": np.asarray(params["grid"]),
+        "coordinates": outputs["grid"],
     }
     return bmode_map, metadata
 
@@ -263,7 +263,7 @@ def main():
     with zea.File(args.input) as f:
         track = f.tracks[0]
         frame_count = track.data.raw_data.shape[0]
-        all_frame_times = np.asarray(track.timestamps[:, 0], dtype=np.float64)
+        all_frame_times = track.timestamps[:, 0].astype(np.float64)
 
     frame_indices = np.arange(args.start_frame, frame_count, args.frame_step)[
         : args.num_frames
