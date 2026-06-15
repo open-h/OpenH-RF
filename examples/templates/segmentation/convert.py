@@ -54,9 +54,7 @@ data = {
     "raw_data": np.random.randn(n_frames, n_tx, n_ax, n_el, 1).astype(np.float32),
     "segmentation": {
         # Boolean mask of shape (frames, z, x, n_classes)
-        "values": np.random.choice(
-            [True, False], (n_frames, seg_h, seg_w, len(labels))
-        ),
+        "values": np.random.choice([True, False], (n_frames, seg_h, seg_w, len(labels))),
         "labels": labels,
         "coordinates": segmentation_coordinates,
     },

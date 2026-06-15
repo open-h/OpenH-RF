@@ -31,7 +31,7 @@ submission files** are:
 
 | File | Role |
 |------|------|
-| `*.hdf5` | Acquisition(s) in [`zea` file format](https://zea.readthedocs.io/en/v0.1.0a2/data-acquisition.html) (one file per acquisition) |
+| `*.hdf5` | Acquisition(s) in [`zea` file format](https://zea.readthedocs.io/en/v0.1.0a3/data-acquisition.html) (one file per acquisition) |
 | [`reconstruct.py`](reconstruct.py) | Reference reconstruction → `.png`, driven by a `zea.Pipeline` |
 | [`pipeline.yaml`](pipeline.yaml) | The saved reconstruction pipeline |
 | `README.md` | This data card |
@@ -98,7 +98,7 @@ tissue segmentation from raw channel data.
 
 ## Dataset Format
 
-Submitted in the [`zea` file format](https://zea.readthedocs.io/en/v0.1.0a2/data-acquisition.html)
+Submitted in the [`zea` file format](https://zea.readthedocs.io/en/v0.1.0a3/data-acquisition.html)
 (one HDF5 file per acquisition). `convert.py` maps the source HF Arrow features
 onto `zea` groups: raw IQ channel data, stored B-modes, the sound-speed map, the
 segmentation, scan parameters, and the per-sample phase-error metric. B-modes are

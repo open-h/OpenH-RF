@@ -77,9 +77,7 @@ def convert_sample(sample: dict, output_path: Path) -> None:
     n_tx, n_el, _ = iq_real.shape
 
     raw_iq = np.stack([iq_real, iq_imag], axis=-1)
-    raw_data = np.transpose(raw_iq, (1, 2, 0, 3))[
-        np.newaxis
-    ]  # [1, n_tx, n_ax, n_el, 2]
+    raw_data = np.transpose(raw_iq, (1, 2, 0, 3))[np.newaxis]  # [1, n_tx, n_ax, n_el, 2]
 
     probe_geometry = elpos.T
 
@@ -93,9 +91,7 @@ def convert_sample(sample: dict, output_path: Path) -> None:
     bmode_values = bmode_to_uint8(bmode)[np.newaxis]  # (1, z, x)
     bmode_focused_values = bmode_to_uint8(bmode_focused)[np.newaxis]
     sos_values = sos_map[np.newaxis]  # (1, z, x)
-    seg_values = np.stack([seg_map == 0, seg_map == 1], axis=-1)[
-        np.newaxis
-    ]  # (1, z, x, 2)
+    seg_values = np.stack([seg_map == 0, seg_map == 1], axis=-1)[np.newaxis]  # (1, z, x, 2)
 
     # Per-pixel coordinate grids (z, x, 3), shared by the B-mode/segmentation
     # (same image grid) and computed separately for the coarser SoS map.
@@ -152,9 +148,7 @@ def convert_sample(sample: dict, output_path: Path) -> None:
     }
 
     metrics = {
-        "common_midpoint_phase_error": np.array(
-            [float(sample["phase_error"])], dtype=np.float32
-        ),
+        "common_midpoint_phase_error": np.array([float(sample["phase_error"])], dtype=np.float32),
     }
 
     File.create(
@@ -173,12 +167,8 @@ def convert_sample(sample: dict, output_path: Path) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--split", default="validation", choices=["train", "validation"]
-    )
-    parser.add_argument(
-        "--index", type=int, default=0, help="Which streamed sample to take"
-    )
+    parser.add_argument("--split", default="validation", choices=["train", "validation"])
+    parser.add_argument("--index", type=int, default=0, help="Which streamed sample to take")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
 

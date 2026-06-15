@@ -44,9 +44,7 @@ probe_geometry[:, 0] = (np.arange(n_el) - (n_el - 1) / 2) * pitch
 # ------------------------------------------------------------------
 def make_scan(n_tx: int, time_to_next_tx: float, focused: bool) -> dict:
     """Create per-track scan parameters for either B-mode or Doppler."""
-    focus_value = np.float32(
-        0.03 if focused else 0.0
-    )  # 0.0 indicates plane-wave in this example
+    focus_value = np.float32(0.03 if focused else 0.0)  # 0.0 indicates plane-wave in this example
     return {
         "sampling_frequency": np.float32(40e6),
         "center_frequency": np.float32(5e6),
@@ -79,14 +77,12 @@ tracks = [
     {
         "label": "bmode",
         "data": {
-            "raw_data": np.random.randn(
-                n_frames, n_tx_bmode, n_ax_bmode, n_el, 1
-            ).astype(np.float32),
+            "raw_data": np.random.randn(n_frames, n_tx_bmode, n_ax_bmode, n_el, 1).astype(
+                np.float32
+            ),
             "image": {
                 # Optional pre-computed B-mode stored with the B-mode track
-                "values": np.random.randint(
-                    0, 255, (n_frames, map_h, map_w), dtype=np.uint8
-                ),
+                "values": np.random.randint(0, 255, (n_frames, map_h, map_w), dtype=np.uint8),
                 "coordinates": map_coordinates,
             },
         },
@@ -95,9 +91,9 @@ tracks = [
     {
         "label": "doppler",
         "data": {
-            "raw_data": np.random.randn(
-                n_frames, n_tx_doppler, n_ax_doppler, n_el, 1
-            ).astype(np.float32),
+            "raw_data": np.random.randn(n_frames, n_tx_doppler, n_ax_doppler, n_el, 1).astype(
+                np.float32
+            ),
             "color_doppler": {
                 # Velocity map in m/s (positive = toward transducer, negative = away)
                 "values": np.random.randn(n_frames, map_h, map_w).astype(np.float32),
@@ -109,9 +105,7 @@ tracks = [
 ]
 
 # One track index per global transmit event, repeated for each frame.
-track_schedule = np.tile([0] * n_tx_bmode + [1] * n_tx_doppler, n_frames).astype(
-    np.int32
-)
+track_schedule = np.tile([0] * n_tx_bmode + [1] * n_tx_doppler, n_frames).astype(np.int32)
 
 # ------------------------------------------------------------------
 # Optional metadata: subject info and annotations

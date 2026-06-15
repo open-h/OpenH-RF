@@ -57,7 +57,9 @@ def main():
             data=data_dict,
             scan=scan_dict,
             probe=vf.probe.to_probe_spec(),
-            description="Verasonics Vantage 256 - CIRS phantom plane-wave acquisition (from .mat file)",
+            description=(
+                "Verasonics Vantage 256 - CIRS phantom plane-wave acquisition (from .mat file)"
+            ),
             overwrite=True,
         )
 

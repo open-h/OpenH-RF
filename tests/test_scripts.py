@@ -88,18 +88,14 @@ def _run_template(template_dir: Path, tmp_path: Path) -> None:
                 f.unlink(missing_ok=True)
 
 
-@pytest.mark.parametrize(
-    "script", LIGHT_SCRIPTS, ids=[_script_id(s) for s in LIGHT_SCRIPTS]
-)
+@pytest.mark.parametrize("script", LIGHT_SCRIPTS, ids=[_script_id(s) for s in LIGHT_SCRIPTS])
 def test_script_runs(script, tmp_path):
     """Run a lightweight example script and assert it exits cleanly."""
     _assert_clean_exit(script, _run(script, tmp_path))
 
 
 @pytest.mark.heavy
-@pytest.mark.parametrize(
-    "script", HEAVY_SCRIPTS, ids=[_script_id(s) for s in HEAVY_SCRIPTS]
-)
+@pytest.mark.parametrize("script", HEAVY_SCRIPTS, ids=[_script_id(s) for s in HEAVY_SCRIPTS])
 def test_heavy_script_runs(script, tmp_path):
     """Run an example script that needs network / HF Hub access."""
     _assert_clean_exit(script, _run(script, tmp_path))
