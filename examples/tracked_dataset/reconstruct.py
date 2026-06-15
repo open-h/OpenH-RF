@@ -6,7 +6,12 @@ ultrasound frame times.
 """
 
 import argparse
+import os
 from pathlib import Path
+
+# Default to the jax backend (installed by `uv sync`) so the script runs under a
+# bare `uv run` without first exporting KERAS_BACKEND. An explicit value wins.
+os.environ.setdefault("KERAS_BACKEND", "jax")
 
 import matplotlib
 
@@ -27,6 +32,8 @@ def coordinates_to_imshow_extent_mm(coordinates):
 
 def translations_at_frame_times(pose, frame_times_s):
     translations = pose.translation
+    # Pose sample times in the image clock: explicit per-sample timestamps when
+    # present, otherwise reconstructed from a constant sampling_frequency.
     if pose.timestamps is not None:
         pose_times_s = float(pose.start_time_offset) + pose.timestamps
     else:

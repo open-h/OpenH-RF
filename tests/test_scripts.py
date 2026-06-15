@@ -31,6 +31,9 @@ LIGHT_TEMPLATE_DIRS = [
 ]
 HEAVY_TEMPLATE_DIRS = [
     ROOT / "examples" / "templates" / "verasonics",
+    # Not under templates/, but same convert.py + reconstruct.py shape; heavy
+    # because convert.py streams the source dataset from Hugging Face.
+    ROOT / "examples" / "tracked_dataset",
 ]
 
 

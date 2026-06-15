@@ -9,7 +9,8 @@ authors = [
     { name = "OpenH-RF Contributors" },
 ]
 dependencies = [
-    "zea==0.1.0a2", # pre-release version of zea
+    # Track the openh-rf branch of zea (probe-pose timestamps feature, PR #437).
+    "zea @ git+https://github.com/tue-bmd/zea.git@openh-rf",
     "numpy",
     "huggingface_hub",
     "datasets",

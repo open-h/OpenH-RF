@@ -1,7 +1,12 @@
 """Convert the tracked CIRS raw HF files to a local OpenH-RF/zea dataset."""
 
 import argparse
+import os
 from pathlib import Path
+
+# Default to the jax backend (installed by `uv sync`) so the script runs under a
+# bare `uv run` without first exporting KERAS_BACKEND. An explicit value wins.
+os.environ.setdefault("KERAS_BACKEND", "jax")
 
 import h5py
 import numpy as np
@@ -34,6 +39,8 @@ def load_probe_pose(path, image_times_ns):
         "translation": (matrices[:, 3, :3] * 1e-3).astype(np.float32),
         "rotation": Rotation.from_matrix(matrices[:, :3, :3]).as_quat().astype(np.float32),
         "rotation_representation": "quaternion_xyzw",
+        # Pose timestamps relative to the first pose, plus the offset from the
+        # first ultrasound image to that first pose sample.
         "start_time_offset": np.float32((pose_times_ns[0] - image_times_ns[0]) / 1e9),
         "timestamps": ((pose_times_ns - pose_times_ns[0]) * 1e-9).astype(np.float32),
     }
@@ -88,7 +95,7 @@ def main():
             repo_type="dataset",
         )
     )
-    """Read the raw RF frames, image timestamps, and scan metadata."""
+    # Read the raw RF frames, image timestamps, and scan metadata.
     with h5py.File(imaging_path, "r") as handle:
         raw_data = np.asarray(handle["raw_data"], dtype=np.float32)
         # One absolute nanosecond timestamp per ultrasound image frame.
@@ -99,10 +106,12 @@ def main():
             "center_frequency": np.asarray(source_scan["center_frequency"]),
             "demodulation_frequency": np.asarray(source_scan["demodulation_frequency"]),
             "sampling_frequency": np.asarray(source_scan["sampling_frequency"]),
+            "sound_speed": np.asarray(source_scan["sound_speed"]),
             "focus_distances": np.asarray(source_scan["focus_distances"]),
             "initial_times": np.asarray(source_scan["initial_times"]),
             "polar_angles": np.asarray(source_scan["polar_angles"]),
             "t0_delays": np.asarray(source_scan["t0_delays"]),
+            # Time between consecutive frames, derived from the image timestamps.
             "time_to_next_transmit": (np.diff(image_times_ns) * 1e-9).astype(np.float32),
             "transmit_origins": np.asarray(source_scan["transmit_origins"]),
             "tx_apodizations": np.asarray(source_scan["tx_apodizations"]),
