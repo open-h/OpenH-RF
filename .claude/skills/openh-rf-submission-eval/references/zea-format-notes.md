@@ -1,9 +1,9 @@
 # zea file format notes
 
 > **Authoritative check is programmatic.** For dimension 1, run
-> `scripts/validate_zea_spec.py <file>` — it reconstructs zea's own `FileSpec`
-> from the file and validates against the zea version installed in the eval
-> environment (the spec *as code*, which cannot drift from these prose notes).
+> `scripts/validate_zea_spec.py <file>` — it runs zea's own validators
+> (`File.validate` + `File.validate_spec`) against the zea version installed in
+> the eval environment (the spec *as code*, which cannot drift from these notes).
 > The notes below are a human-readable companion for interpreting results and
 > spotting recommended-but-not-required fields; if they ever disagree with the
 > installed zea spec, **the installed spec wins**.
@@ -45,7 +45,7 @@ since zea's generic spec does not).
 
 | Field | Dtype | Shape | Units | Notes |
 |---|---|---|---|---|
-| `raw_data` | float32 / int16 | `(n_frames, n_tx, n_ax, n_el, n_ch)` | V | Raw channel data |
+| `raw_data` | float32 / int16 | `(n_frames, n_tx, n_ax, n_el, n_ch)` | a.u. | Raw channel data |
 
 Derived products are each a **sub-group** with a `values` array plus optional
 `coordinates` and metadata (`labels`, `description`, `unit`, `min`, `max`):

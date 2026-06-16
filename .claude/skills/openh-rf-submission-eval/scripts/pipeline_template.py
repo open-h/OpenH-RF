@@ -9,22 +9,21 @@ Standard chain:
     raw channel data -> DAS beamforming -> envelope detection -> normalize -> log compression
 
 The canonical Pipeline docs are at
-https://zea.readthedocs.io/en/openh-rf-latest/pipeline.html — but note that the
-working pattern is:
+https://zea.readthedocs.io/en/openh-rf-latest/pipeline.html. The working pattern
+(against the openh-rf-latest zea spec) is:
 
-    pipeline = zea.Pipeline(operations=[...])           # or Pipeline.from_path("pipeline.yaml")
-    params   = pipeline.prepare_parameters(probe, scan) # geometry/grid from the file
-    outputs  = pipeline(**{pipeline.key: raw}, **params)
-    image    = keras.ops.convert_to_numpy(outputs[pipeline.output_key])[frame]
+    pipeline   = zea.Pipeline(operations=[...])            # or Pipeline.from_path("pipeline.yaml")
+    parameters = f.load_parameters()                       # scan + probe + grid, from the file
+    inputs     = pipeline.prepare_parameters(parameters)
+    image      = pipeline(**{pipeline.key: raw}, **inputs)[pipeline.output_key][frame]
 """
 
 import os
 from pathlib import Path
 
-# Default to the jax backend (installed by `uv sync`) before importing keras/zea.
+# Default to the jax backend (installed by `uv sync`) before importing zea.
 os.environ.setdefault("KERAS_BACKEND", "jax")
 
-import keras
 import numpy as np
 import zea
 from zea.ops import Beamform, EnvelopeDetect, LogCompress, Normalize
@@ -35,8 +34,9 @@ def build_pipeline() -> "zea.Pipeline":
 
     The operations are geometry-agnostic; per-acquisition parameters (probe
     geometry, sound speed, sampling frequency, transmit sequence, grid) are
-    derived from the zea file at run time via ``prepare_parameters`` — this is
-    what makes the pipeline portable across submissions.
+    derived from the zea file at run time via ``load_parameters`` +
+    ``prepare_parameters`` — this is what makes the pipeline portable across
+    submissions.
     """
     return zea.Pipeline(
         operations=[
@@ -62,14 +62,16 @@ def reconstruct(
     """
     zea.init_device()
     with zea.File(str(zea_path)) as f:
-        probe = f.probe()
-        scan = f.scan()
+        # load_parameters merges scan + probe and derives the reconstruction
+        # grid from the file (a single-track file; for multi-track use
+        # f.tracks[i].load_parameters() / f.tracks[i].data.raw_data).
+        parameters = f.load_parameters()
         raw = f.data.raw_data[:]
 
     pipeline = pipeline or build_pipeline()
-    params = pipeline.prepare_parameters(probe, scan)
-    outputs = pipeline(**{pipeline.key: raw}, **params)
-    return keras.ops.convert_to_numpy(outputs[pipeline.output_key])[frame_index]
+    inputs = pipeline.prepare_parameters(parameters)
+    outputs = pipeline(**{pipeline.key: raw}, **inputs)
+    return np.asarray(outputs[pipeline.output_key])[frame_index]
 
 
 if __name__ == "__main__":

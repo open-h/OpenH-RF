@@ -3,15 +3,18 @@ Validate a zea file against the installed zea data spec (programmatic).
 
 Used by dimension 1 (format compliance) as the authoritative check. Rather than
 comparing the file against a hand-maintained field list (which drifts out of
-date), this reconstructs zea's own ``FileSpec`` from the file via
-``FileSpec.from_hdf5`` — which runs every dtype / shape / dimension-consistency
-validation the spec defines in its ``__post_init__`` hooks. Compliance is
-therefore checked against *the zea version installed in the evaluation
-environment*; the reported ``zea_version`` records which spec was applied.
+date), this opens the file with zea and runs zea's own validators against the
+zea version installed in the evaluation environment:
 
-If the spec reconstructs without error, the file is compliant with that zea
-version. If it raises, the exception message is the precise violation and
-becomes a dimension-1 finding.
+  - ``File.validate()``      — fast, zero-IO structural check (a ``data`` group is
+    present and every key is a recognised zea data type).
+  - ``File.validate_spec()`` — full schema validation: reads the data and checks
+    dtypes, shapes, and cross-field dimension consistency as defined by
+    ``zea.data.spec.FileSpec`` (loads all arrays into RAM).
+
+The reported ``zea_version`` records which spec was applied. If both validators
+pass, the file is compliant with that zea version. If either raises, the
+exception message is the precise violation and becomes a dimension-1 finding.
 
 Usage:
     python validate_zea_spec.py path/to/sample.hdf5
@@ -30,9 +33,7 @@ os.environ.setdefault("KERAS_BACKEND", "jax")
 
 
 def validate(path: Path) -> dict:
-    import h5py
     import zea
-    from zea.data.spec import FileSpec
 
     result = {
         "path": str(path),
@@ -44,14 +45,16 @@ def validate(path: Path) -> dict:
         "errors": [],
     }
     try:
-        with h5py.File(str(path), "r") as hf:
-            result["top_level_groups"] = sorted(hf.keys())
-            if "data" in hf:
-                result["data_groups"] = sorted(hf["data"].keys())
-                result["has_raw_data"] = "raw_data" in hf["data"]
-            # The load-bearing check: reconstructing FileSpec re-runs every
-            # validation the installed zea spec defines.
-            FileSpec.from_hdf5(hf)
+        with zea.File(str(path)) as f:
+            result["top_level_groups"] = sorted(f.keys())
+            if "data" in f:
+                result["data_groups"] = sorted(f["data"].keys())
+                result["has_raw_data"] = "raw_data" in f["data"]
+            # The load-bearing checks: zea's own validators run against the
+            # installed spec. validate() is the cheap structural pass;
+            # validate_spec() is the full dtype/shape/dimension-consistency pass.
+            f.validate()
+            f.validate_spec()
         result["compliant"] = True
     except Exception as e:  # noqa: BLE001 - any spec violation is a finding
         result["errors"].append(f"{type(e).__name__}: {e}")
