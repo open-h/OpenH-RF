@@ -13,19 +13,19 @@ Environment setup is in the [main README](../../README.md).
 
 ```bash
 # 1. download the source files from HF and write the zea-format HDF5 + config
-uv run python examples/tracked_dataset/convert.py
+uv run python examples/tracked-cirs-phantom/convert.py
 
 # 2. beamform one frame and save the B-mode + tracked trajectory figure
-uv run python examples/tracked_dataset/reconstruct.py
+uv run python examples/tracked-cirs-phantom/reconstruct.py
 
 # 3. optional: install the volume renderer used by the 3D example
 uv pip install pyvista
 
 # 4. beamform several frames, mosaic them (max-compounded), save .vti + rendered PNGs
-uv run python examples/tracked_dataset/reconstruct_3d.py
+uv run python examples/tracked-cirs-phantom/reconstruct_3d.py
 
 # add --live to open an interactive PyVista view after rendering
-uv run python examples/tracked_dataset/reconstruct_3d.py --live
+uv run python examples/tracked-cirs-phantom/reconstruct_3d.py --live
 ```
 
 ---
