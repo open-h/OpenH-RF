@@ -1,0 +1,17 @@
+repos:
+  - repo: local
+    hooks:
+      - id: uv-lock-check
+        name: uv lock --check
+        description: Keep uv.lock in sync with pyproject.toml (same check CI runs).
+        entry: uv lock --check
+        language: system
+        files: ^(pyproject\.toml|uv\.lock)$
+        pass_filenames: false
+
+      - id: ruff-check
+        name: ruff check
+        description: Lint with ruff (same check CI runs).
+        entry: uv run ruff check
+        language: system
+        types: [python]
