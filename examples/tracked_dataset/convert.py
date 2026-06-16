@@ -136,7 +136,7 @@ def main():
     # Store raw RF plus scan metadata, and attach independently sampled tracking.
     File.create(
         str(output_path),
-        data= {"raw_data": raw_data},
+        data={"raw_data": raw_data},
         scan=scan,
         probe=probe,
         metadata=metadata,
