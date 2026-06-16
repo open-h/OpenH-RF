@@ -29,6 +29,7 @@ os.environ.setdefault("KERAS_BACKEND", "jax")
 import numpy as np
 from datasets import load_dataset
 from zea import File
+from zea.beamform.pixelgrid import cartesian_pixel_grid
 from zea.display import to_8bit
 from zea.func.ultrasound import log_compress
 
@@ -45,10 +46,23 @@ def bmode_to_uint8(bmode: np.ndarray, dynamic_range_db: float = 60.0) -> np.ndar
     )
 
 
-def extent_to_openh(ext: np.ndarray, scale: float) -> np.ndarray:
-    """[x_min, x_max, z_max, z_min] -> openh-rf [xmin, xmax, 0, 0, zmin, zmax]."""
+def coords_from_extent(
+    ext: np.ndarray, scale: float, grid_size_z: int, grid_size_x: int
+) -> np.ndarray:
+    """Source extent -> per-pixel Cartesian coordinates for the openh-rf spec.
+
+    The openh-rf (zea) Map spec stores per-pixel positions, not a bounding box:
+    `coordinates` of shape (grid_size_z, grid_size_x, 3) in metres, last axis
+    [x, y, z]. The source extent is `[x_min, x_max, z_max, z_min]` in `scale`
+    units (mm for B-modes, m for the SoS map); `scale` converts it to metres.
+    """
     x_min, x_max, z_max, z_min = np.asarray(ext, dtype=np.float64) * scale
-    return np.array([x_min, x_max, 0.0, 0.0, z_min, z_max], dtype=np.float32)
+    return cartesian_pixel_grid(
+        xlims=(x_min, x_max),
+        zlims=(z_min, z_max),
+        grid_size_x=grid_size_x,
+        grid_size_z=grid_size_z,
+    ).astype(np.float32)
 
 
 def convert_sample(sample: dict, output_path: Path) -> None:
@@ -68,42 +82,53 @@ def convert_sample(sample: dict, output_path: Path) -> None:
     ]  # [1, n_tx, n_ax, n_el, 2]
 
     probe_geometry = elpos.T
-    bmode_extent = extent_to_openh(sample["bmode_extent"], scale=1e-3)
-    sos_extent = extent_to_openh(sample["sound_speed_extent"], scale=1.0)
 
-    bmode_values = bmode_to_uint8(bmode)[np.newaxis]
+    # The B-mode, focused B-mode, and segmentation share one image grid, so they
+    # reuse the same per-pixel coordinates below. Guard that assumption.
+    assert seg_map.shape == bmode.shape, (
+        f"segmentation {seg_map.shape} and B-mode {bmode.shape} must share the "
+        "image grid (they reuse the same coordinates)"
+    )
+
+    bmode_values = bmode_to_uint8(bmode)[np.newaxis]  # (1, z, x)
     bmode_focused_values = bmode_to_uint8(bmode_focused)[np.newaxis]
-    sos_values = sos_map[np.newaxis]
+    sos_values = sos_map[np.newaxis]  # (1, z, x)
     seg_values = np.stack([seg_map == 0, seg_map == 1], axis=-1)[
-        np.newaxis, :, :, np.newaxis, :
-    ]
+        np.newaxis
+    ]  # (1, z, x, 2)
+
+    # Per-pixel coordinate grids (z, x, 3), shared by the B-mode/segmentation
+    # (same image grid) and computed separately for the coarser SoS map.
+    nz_b, nx_b = bmode_values.shape[1], bmode_values.shape[2]
+    nz_s, nx_s = sos_values.shape[1], sos_values.shape[2]
+    bmode_coords = coords_from_extent(sample["bmode_extent"], 1e-3, nz_b, nx_b)
+    sos_coords = coords_from_extent(sample["sound_speed_extent"], 1.0, nz_s, nx_s)
 
     data = {
         "raw_data": raw_data,
         "image": {
             "values": bmode_values,
-            "extent": bmode_extent,
+            "coordinates": bmode_coords,
             "description": "B-mode (DAS, c=1540 m/s)",
         },
         "bmode_focused": {
             "values": bmode_focused_values,
-            "extent": bmode_extent,
+            "coordinates": bmode_coords,
             "description": "B-mode (DBUA aberration-corrected)",
         },
         "sos_map": {
             "values": sos_values,
-            "extent": sos_extent,
+            "coordinates": sos_coords,
             "unit": "m/s",
         },
         "segmentation": {
             "values": seg_values,
-            "labels": np.array(["background", "inclusion"], dtype=np.str_),
-            "extent": bmode_extent,
+            "labels": ["background", "inclusion"],
+            "coordinates": bmode_coords,
         },
     }
 
     scan = {
-        "probe_geometry": probe_geometry,
         "sampling_frequency": float(sample["fs"]),
         "center_frequency": float(sample["fc"]),
         "demodulation_frequency": float(sample["fd"]),
@@ -122,7 +147,7 @@ def convert_sample(sample: dict, output_path: Path) -> None:
         "credit": "NV-Raw2Insights-US — NVIDIA (CC-BY-4.0)",
         "annotations": {
             "anatomy": "phantom",
-            "label": np.array(["simulation"], dtype=np.str_),
+            "label": "simulation",
         },
     }
 
@@ -138,10 +163,12 @@ def convert_sample(sample: dict, output_path: Path) -> None:
         scan=scan,
         metadata=metadata,
         metrics=metrics,
-        probe_name="Simulated 10L4 Transducer",
+        # In this zea version the probe (incl. probe_geometry) is passed here, not
+        # in `scan`; the old `probe_name=` argument is no longer accepted.
+        probe={"name": "Simulated 10L4 Transducer", "probe_geometry": probe_geometry},
         description="NV-Raw2Insights-US FSA phantom simulation (simulated in k-Wave)",
         overwrite=True,
-    ).close()
+    )
 
 
 def main():
@@ -165,9 +192,9 @@ def main():
 
     with File(str(args.output)) as f:
         print(f"Data keys: {list(f.data)}")
-        print(f"Scan parameters: {f.scan()}")
-        print(f"Metadata: {f.metadata()}")
-        print(f"Metrics: {f.metrics()}")
+        print(f"Scan parameters: {f.scan}")
+        print(f"Metadata: {f.metadata}")
+        print(f"Metrics: {f.metrics}")
 
 
 if __name__ == "__main__":

@@ -768,6 +768,15 @@ wheels = [
 ]
 
 [[package]]
+name = "docstring-parser"
+version = "0.18.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e0/4d/f332313098c1de1b2d2ff91cf2674415cc7cddab2ca1b01ae29774bd5fdf/docstring_parser-0.18.0.tar.gz", hash = "sha256:292510982205c12b1248696f44959db3cdd1740237a968ea1e2e7a900eeb2015", size = 29341, upload-time = "2026-04-14T04:09:19.867Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a7/5f/ed01f9a3cdffbd5a008556fc7b2a08ddb1cc6ace7effa7340604b1d16699/docstring_parser-0.18.0-py3-none-any.whl", hash = "sha256:b3fcbed555c47d8479be0796ef7e19c2670d428d72e96da63f3a40122860374b", size = 22484, upload-time = "2026-04-14T04:09:18.638Z" },
+]
+
+[[package]]
 name = "etils"
 version = "1.13.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2879,7 +2888,7 @@ requires-dist = [
     { name = "tensorflow", marker = "extra == 'tf'" },
     { name = "tensorflow", extras = ["and-cuda"], marker = "extra == 'tf-gpu'" },
     { name = "torch", marker = "extra == 'torch'" },
-    { name = "zea", specifier = "==0.1.0a1" },
+    { name = "zea", specifier = "==0.1.0a2" },
 ]
 provides-extras = ["test", "gpu", "torch", "tf", "tf-gpu"]
 
@@ -3761,15 +3770,6 @@ wheels = [
 ]
 
 [[package]]
-name = "schema"
-version = "0.7.8"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/fb/2e/8da627b65577a8f130fe9dfa88ce94fcb24b1f8b59e0fc763ee61abef8b8/schema-0.7.8.tar.gz", hash = "sha256:e86cc08edd6fe6e2522648f4e47e3a31920a76e82cce8937535422e310862ab5", size = 45540, upload-time = "2025-10-11T13:15:40.281Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c9/75/aad85817266ac5285c93391711d231ca63e9ae7d42cd3ca37549e24ebe52/schema-0.7.8-py2.py3-none-any.whl", hash = "sha256:00bd977fadc7d9521bf289850cd8a8aa5f4948f575476b8daaa5c1b57af2dce1", size = 19108, upload-time = "2025-10-11T17:13:07.323Z" },
-]
-
-[[package]]
 name = "scikit-image"
 version = "0.25.2"
 source = { registry = "https://pypi.org/simple" }
@@ -4516,6 +4516,18 @@ wheels = [
 ]
 
 [[package]]
+name = "typeguard"
+version = "4.5.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/67/1c/dfba5c4633cafc4c701f237d2ba63b416805047fd6d96aab4cfc40969f98/typeguard-4.5.2.tar.gz", hash = "sha256:5a16dcac23502039299c97c8941651bc33d7ea8cc4b2f7d6bbb1b528f6eea423", size = 80240, upload-time = "2026-05-14T12:59:40.857Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5b/29/74eeb4d3f3ae61ca096b018ad486b3b3c74b17bec09ab4edab721cbefec3/typeguard-4.5.2-py3-none-any.whl", hash = "sha256:fcf9de18bd945cdb4c7b996e12b4c51ce83f92f191314a6d7cf1739586ec98cf", size = 36748, upload-time = "2026-05-14T12:59:39.473Z" },
+]
+
+[[package]]
 name = "typer"
 version = "0.25.1"
 source = { registry = "https://pypi.org/simple" }
@@ -4549,6 +4561,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/55/e3/70399cb7dd41c10ac53367ae42139cf4b1ca5f36bb3dc6c9d33acdb43655/typing_inspection-0.4.2.tar.gz", hash = "sha256:ba561c48a67c5958007083d386c3295464928b01faa735ab8547c5692e87f464", size = 75949, upload-time = "2025-10-01T02:14:41.687Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/dc/9b/47798a6c91d8bdb567fe2698fe81e0c6b7cb7ef4d13da4114b41d239f65d/typing_inspection-0.4.2-py3-none-any.whl", hash = "sha256:4ed1cacbdc298c220f1bd249ed5287caa16f34d44ef4e9c3d0cbad5b521545e7", size = 14611, upload-time = "2025-10-01T02:14:40.154Z" },
+]
+
+[[package]]
+name = "tyro"
+version = "1.0.13"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "docstring-parser" },
+    { name = "typeguard" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/24/d6/7126f9e7de139632134d59b5d1972e93c610ee2cb13829e8f4f48f6613cb/tyro-1.0.13.tar.gz", hash = "sha256:731a90c9836b77fffe7c3fa0477ef2d3b6fa91252ddc0bb4d32dadd4fcc143d4", size = 489479, upload-time = "2026-04-14T18:21:52.888Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/93/4f/c43a0a8f0c66fd40a1d6cc47332a5a1d1043e9b331f7070ea701b91a7598/tyro-1.0.13-py3-none-any.whl", hash = "sha256:a0bdb8462c551dd84fc00a76916ce4d37e879c84eefaf34e2165312407cc6c09", size = 185221, upload-time = "2026-04-14T18:21:54.328Z" },
 ]
 
 [[package]]
@@ -5013,7 +5039,7 @@ wheels = [
 
 [[package]]
 name = "zea"
-version = "0.1.0a1"
+version = "0.1.0a2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "decorator" },
@@ -5030,7 +5056,6 @@ dependencies = [
     { name = "pillow" },
     { name = "protobuf" },
     { name = "pyyaml" },
-    { name = "schema" },
     { name = "scikit-image", version = "0.25.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "scikit-image", version = "0.26.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "scikit-learn", version = "1.7.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -5038,12 +5063,13 @@ dependencies = [
     { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "tqdm" },
+    { name = "tyro" },
     { name = "wandb" },
     { name = "wget" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f5/cf/ed2a3023d5626d900f2b4ef9f01003ccdca1233e108095aee1ce853ab66d/zea-0.1.0a1.tar.gz", hash = "sha256:1e5b485db4dd51c64167198c20bd2964540661ccc79278838f66b59dc15f6e52", size = 451814, upload-time = "2026-06-04T07:07:16.136Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4f/6e/b5e819d3fd42f076a2eea275bb88113bafc0d66ac55f9cfe56017d27609c/zea-0.1.0a2.tar.gz", hash = "sha256:0288ad8c0da301a5db1a492c7d9869ea2b183ddc9da161f4f51e762e2c63e2f1", size = 472847, upload-time = "2026-06-09T18:48:59.941Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/8a/221805a5cde5c5b5bb14b76af8c2bb1030815bdc0f19fba4e42256e3d55e/zea-0.1.0a1-py3-none-any.whl", hash = "sha256:94b8f55502b0d9c9b4fc3e7af14b2e103822873f604bc359f1ea26fa524f2726", size = 513758, upload-time = "2026-06-04T07:07:14.586Z" },
+    { url = "https://files.pythonhosted.org/packages/66/13/612db1f343e8bf65686eb14b3a469ca3a0da1afacff38a99d450dbfabd3b/zea-0.1.0a2-py3-none-any.whl", hash = "sha256:753df99ee1d7ddaa99f90e7bdb2d9812a0928ec62479c3508b62970e726c9484", size = 536249, upload-time = "2026-06-09T18:48:57.98Z" },
 ]
 
 [[package]]

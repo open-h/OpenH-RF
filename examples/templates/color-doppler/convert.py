@@ -121,7 +121,7 @@ metadata = {
     "subject": {"id": "subject_002", "type": "human", "age": 62, "sex": "F"},
     "annotations": {
         "anatomy": "carotid",
-        "view": np.array(["longitudinal"] * n_frames, dtype=np.str_),
+        "view": "longitudinal",
     },
 }
 

@@ -13,9 +13,8 @@ Usage:
 from pathlib import Path
 
 import numpy as np
-from zea.beamform.pixelgrid import cartesian_pixel_grid
-
 from zea import File
+from zea.beamform.pixelgrid import cartesian_pixel_grid
 
 OUTPUT = Path(__file__).parent / "segmentation.hdf5"
 
@@ -43,7 +42,7 @@ zlims = (0.0, 30e-3)
 # Data: raw RF + segmentation mask
 # ------------------------------------------------------------------
 # Segmentation labels: integer pixel values map to class names by index
-labels = np.array(["background", "vessel_wall", "lumen"], dtype=np.str_)
+labels = ["background", "vessel_wall", "lumen"]
 segmentation_coordinates = cartesian_pixel_grid(
     xlims=xlims,
     zlims=zlims,
@@ -86,8 +85,8 @@ metadata = {
     "credit": "segmentation convert.py",
     "annotations": {
         "anatomy": "carotid",
-        "view": np.array(["cross-section"] * n_frames, dtype=np.str_),
-        "label": np.array(["normal"] * n_frames, dtype=np.str_),
+        "view": "cross-section",
+        "label": "normal",
     },
 }
 
