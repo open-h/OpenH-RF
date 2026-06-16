@@ -9,8 +9,13 @@ Usage:
 """
 
 import argparse
+import os
 import zipfile
 from pathlib import Path
+
+# Default to the jax backend (installed by `uv sync`) so the script runs under a
+# bare `uv run` without first exporting KERAS_BACKEND. An explicit value wins.
+os.environ.setdefault("KERAS_BACKEND", "jax")
 
 import h5py
 import numpy as np

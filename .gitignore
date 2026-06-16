@@ -7,6 +7,7 @@ __pycache__/
 .gradio
 *.egg-info/
 .DS_Store
+*.zip
 
 # Generated example artifacts (written by the example scripts at run time)
 examples/tracked_dataset/data/
