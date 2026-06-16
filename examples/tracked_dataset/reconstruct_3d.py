@@ -163,7 +163,7 @@ def main():
     config = zea.Config.from_path(args.config)
     with zea.File(args.input) as f:
         frame_count = f.tracks[0].data.raw_data.shape[0]
-        frame_times = f.tracks[0].timestamps[:, 0].astype(np.float64)
+        frame_times = f.timestamps
 
     frame_indices = np.arange(0, frame_count, FRAME_STEP)[:NUM_FRAMES]
     if len(frame_indices) == 0:

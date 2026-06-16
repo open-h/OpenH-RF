@@ -75,7 +75,7 @@ def main():
     with zea.File(args.input) as f:
         track = f.tracks[0]
         frame_count = track.data.raw_data.shape[0]
-        frame_times_s = np.asarray(track.timestamps[:, 0], dtype=np.float64)
+        frame_times_s = f.timestamps
         parameters = track.load_parameters(**config.parameters)
         raw = track.data.raw_data[args.frame_index : args.frame_index + 1]
         metadata = f.metadata
