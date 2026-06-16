@@ -1,7 +1,9 @@
-# Beamforming config for the Verasonics CIRS plane-wave phantom example.
+# Beamforming config for the PALA in-vivo rat-brain ULM example.
 #
-# The acquisition uses plane-wave compounding with an L7-4 linear array.
-# RF data is demodulated before beamforming.
+# The acquisition is 5-angle plane-wave compounding on an L22-14v linear array
+# (128 elements). The channel data is already IQ-demodulated (last axis [I, Q]),
+# so it is cast and beamformed directly; tissue suppression precedes envelope
+# detection to attenuate static tissue clutter before B-mode display.
 
 parameters:
   grid_size_x: 400

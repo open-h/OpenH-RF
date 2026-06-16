@@ -2,7 +2,7 @@
 """Reconstruct: beamform the PALA dataset file created by convert.py.
 
 Loads the HDF5 file created by convert.py, reads the acquisition parameters and
-raw RF data, and runs a delay-and-sum beamforming pipeline configured in
+raw IQ channel data, and runs a delay-and-sum beamforming pipeline configured in
 pipeline.yaml. The resulting B-mode image is saved as a PNG file.
 
 Usage:
@@ -48,12 +48,12 @@ def main():
     # Load beamforming config
     config = Config.from_path(str(CONFIG))
 
-    # Load file: read acquisition parameters (with config overrides) and raw RF data
+    # Load file: read acquisition parameters (with config overrides) and raw IQ data
     with File(str(args.input)) as f:
         parameters = f.load_parameters(
             **config.parameters
         )  # applies grid_size, n_ch, etc. from config
-        raw = f.data.raw_data[:]  # (n_frames, n_tx, n_ax, n_el, 1) — RF
+        raw = f.data.raw_data[:]  # (n_frames, n_tx, n_ax, n_el, 2) — IQ
 
     print(f"raw_data shape : {raw.shape}")
     print(f"grid           : {parameters.grid.shape}  (z, x, 3)")

@@ -1,3 +1,23 @@
+---
+pretty_name: "OpenH-RF — PALA In Vivo Rat Brain ULM"
+license: cc-by-4.0
+task_categories:
+  - image-feature-extraction
+  - other
+tags:
+  - ultrasound
+  - rf
+  - iq
+  - openh-rf
+  - ultrasound-localization-microscopy
+  - in-vivo
+  - rat-brain
+language:
+  - en
+size_categories:
+  - n<1K
+---
+
 # PALA — In Vivo Rat Brain ULM
 
 ## Dataset Description
@@ -10,7 +30,7 @@ Chavignon Arthur, Baptiste Heiles, Hingot Vincent, Lopez Pauline, Teston Eliott,
 
 ## Dataset Creation Date
 
-Source data deposited on [Zenodo (2023)](https://doi.org/10.5281/zenodo.7883226); converted to zea format 2026/06/13.
+Source data deposited on [Zenodo (2023)](https://doi.org/10.5281/zenodo.7883226); converted to zea format 06/13/2026.
 
 ## License / Terms of Use
 
@@ -39,7 +59,7 @@ Submitted in the [`zea` file format](https://zea.readthedocs.io/en/v0.1.0a3/data
 
 | Field | Shape | dtype | Units | Description |
 |---|---|---|---|---|
-| `raw_data` | `(800, 5, 256, 128, 2)` | float32 | — | IQ channel data: frames × transmits × axial × elements × {I, Q} |
+| `raw_data` | `(800, 5, 256, 128, 2)` | float32 | a.u. | IQ channel data: frames × transmits × axial × elements × {I, Q} |
 | `scan.polar_angles` | `(5,)` | float32 | rad | Plane-wave steering angles |
 | `scan.t0_delays` | `(5, 128)` | float32 | s | Transmit delays per element |
 | `probe.probe_geometry` | `(128, 3)` | float32 | m | Element positions |
@@ -55,7 +75,27 @@ A `zea.Pipeline` (DAS → tissue suppression → envelope detection → normaliz
 ## Known Issues
 
 - Element width is not stored in the source file and is estimated at 0.09 mm (90% of the 0.1 mm pitch).
+- The IQ channel data is uncalibrated ADC output (arbitrary units), not an absolute voltage measurement; only relative amplitudes are meaningful.
 
 ## Ethical Considerations
 
-Animal experiments described in the source publication (Heiles et al., 2022) were carried out under the relevant institutional and national ethical approvals for animal research. Animal preparation and contrast-agent perfusion performed at the CYCERON biomedical imaging platform (Caen, France). No human subjects; no PHI.
+This is in vivo **animal** data — there are no human subjects and no PHI. The
+animal experiments were performed and ethically approved as described in the
+source publication (Heiles et al., *Nature Biomedical Engineering*, 2022); the
+specific protocol approval and regulatory authorization are documented there.
+
+ARRIVE 2.0 reporting (from the source, aggregate):
+
+- **Species / strain:** rat, Sprague-Dawley
+- **Procedure:** craniotomy (skull removal); coronal-section brain imaging with
+  continuous intravenous microbubble (ultrasound contrast agent) perfusion
+- **Sample size:** one animal / one acquisition file in this packaged example
+- **Facility:** CYCERON biomedical imaging platform, Caen, France
+- **Regulatory framework:** animal research in France is governed by EU Directive
+  2010/63/EU and its French transposition
+
+> The specific ethics-committee approval / authorization number is held in the
+> source publication and is **not** reproduced here; transcribe it verbatim from
+> Heiles et al. (2022) for any formal submission. Anaesthesia, housing, and
+> husbandry details likewise live in the source and should be added if this
+> example is ever promoted to a tracked animal-data submission.
