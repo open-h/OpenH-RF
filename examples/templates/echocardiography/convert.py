@@ -54,9 +54,7 @@ data = {
     "raw_data": np.random.randn(n_frames, n_tx, n_ax, n_el, 1).astype(np.float32),
     "image": {
         # Pre-computed B-mode stored alongside raw data as a reference
-        "values": np.random.randint(
-            0, 255, (n_frames, img_h, img_w, 1), dtype=np.uint8
-        ),
+        "values": np.random.randint(0, 255, (n_frames, img_h, img_w, 1), dtype=np.uint8),
         "coordinates": map_coordinates,
     },
     "strain_percentage_map": {
@@ -95,7 +93,7 @@ metadata = {
         "fat_percentage": 22.0,
     },
     "ecg": {
-        "samples": np.random.randint(50, 200, (500,), dtype=np.uint8),
+        "samples": np.zeros((500,), dtype=np.float32),
         "start_time_offset": np.float32(0.0),
         "sampling_frequency": np.float32(500.0),
     },

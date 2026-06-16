@@ -86,7 +86,7 @@ def main():
             grid_size_z=nz,
             xlims=[float(img_coords[..., 0].min()), float(img_coords[..., 0].max())],
             zlims=[float(img_coords[..., 2].min()), float(img_coords[..., 2].max())],
-            n_ch=raw.shape[-1],          # 2 = baseband IQ
+            n_ch=raw.shape[-1],  # 2 = baseband IQ
             selected_transmits="all",
         )
 
@@ -148,9 +148,7 @@ def main():
     axes[0].set_ylabel("Axial sample")
 
     # 2: Stored B-mode (DAS)
-    axes[1].imshow(
-        img[0], aspect="auto", cmap="gray", extent=coords_to_imshow_mm(img_coords)
-    )
+    axes[1].imshow(img[0], aspect="auto", cmap="gray", extent=coords_to_imshow_mm(img_coords))
     axes[1].set_title(f"B-mode (DAS, stored)\nimage: {img.shape}")
     axes[1].set_xlabel("Lateral [mm]")
     axes[1].set_ylabel("Depth [mm]")
@@ -164,26 +162,20 @@ def main():
     axes[2].set_ylabel("Depth [mm]")
 
     # 4: zea-reconstructed B-mode (DAS pipeline on raw_data)
-    axes[3].imshow(
-        recon, aspect="auto", cmap="gray", vmin=-60, vmax=0, extent=recon_ext
-    )
+    axes[3].imshow(recon, aspect="auto", cmap="gray", vmin=-60, vmax=0, extent=recon_ext)
     axes[3].set_title(f"B-mode (DAS, zea)\nreconstructed: {recon.shape}")
     axes[3].set_xlabel("Lateral [mm]")
     axes[3].set_ylabel("Depth [mm]")
 
     # 5: SOS map
-    im = axes[4].imshow(
-        sos[0], aspect="auto", cmap="hot", extent=coords_to_imshow_mm(sos_coords)
-    )
+    im = axes[4].imshow(sos[0], aspect="auto", cmap="hot", extent=coords_to_imshow_mm(sos_coords))
     plt.colorbar(im, ax=axes[4], label="m/s")
     axes[4].set_title(f"Speed of sound\nsos_map: {sos.shape}")
     axes[4].set_xlabel("Lateral [mm]")
     axes[4].set_ylabel("Depth [mm]")
 
     # 6: zea-reconstructed B-mode with SoS correction
-    axes[5].imshow(
-        recon_sos, aspect="auto", cmap="gray", vmin=-60, vmax=0, extent=recon_ext
-    )
+    axes[5].imshow(recon_sos, aspect="auto", cmap="gray", vmin=-60, vmax=0, extent=recon_ext)
     axes[5].set_title(f"B-mode (DAS + SoS, zea)\nreconstructed: {recon_sos.shape}")
     axes[5].set_xlabel("Lateral [mm]")
     axes[5].set_ylabel("Depth [mm]")
@@ -206,9 +198,7 @@ def main():
     axes[6].set_xlabel("Lateral [mm]")
     axes[6].set_ylabel("Depth [mm]")
 
-    fig.suptitle(
-        f"openh-rf sample (phase error: {phase_err[0]:.2f} rad)", fontsize=14, y=1.02
-    )
+    fig.suptitle(f"openh-rf sample (phase error: {phase_err[0]:.2f} rad)", fontsize=14, y=1.02)
     plt.tight_layout()
     plt.savefig(args.output, dpi=150, bbox_inches="tight")
     print(f"Saved {args.output}")

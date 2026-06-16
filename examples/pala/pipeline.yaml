@@ -1,0 +1,27 @@
+# Beamforming config for the Verasonics CIRS plane-wave phantom example.
+#
+# The acquisition uses plane-wave compounding with an L7-4 linear array.
+# RF data is demodulated before beamforming.
+
+parameters:
+  grid_size_x: 400
+  grid_size_z: 600
+  dynamic_range: [-60, 0]
+  zlims: [0.001, 0.013]
+  apply_lens_correction: false
+  lens_sound_speed: 1000
+  lens_thickness: 0.002
+
+pipeline:
+  operations:
+    - name: cast
+      params:
+        dtype: float32
+    - name: beamform
+      params:
+        beamformer: delay_and_sum
+        num_patches: 200
+    - name: tissue_suppression
+    - name: envelope_detect
+    - name: normalize
+    - name: log_compress

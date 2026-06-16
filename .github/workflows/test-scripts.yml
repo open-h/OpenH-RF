@@ -29,5 +29,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra test --frozen
 
+      - name: Lint with ruff
+        run: uv run ruff check .
+
       - name: Run lightweight script tests
         run: uv run pytest tests/ -m "not heavy" -v
