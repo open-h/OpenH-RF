@@ -19,6 +19,7 @@ LIGHT_SCRIPTS = [
 ]
 HEAVY_SCRIPTS = [
     ROOT / "examples" / "nv-raw2insights-us" / "convert.py",
+    ROOT / "examples" / "tracked_dataset" / "convert.py",
 ]
 
 # Template directories whose convert.py + reconstruct.py must run in sequence.

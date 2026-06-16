@@ -136,8 +136,8 @@ def main():
     # Store raw RF plus scan metadata, and attach independently sampled tracking.
     File.create(
         str(output_path),
-        tracks=[{"data": {"raw_data": raw_data}, "scan": scan}],
-        track_schedule=np.zeros(raw_data.shape[0] * raw_data.shape[1], dtype=np.int32),
+        data= {"raw_data": raw_data},
+        scan=scan,
         probe=probe,
         metadata=metadata,
         description="Simulated UltraRay CIRS RF acquisition",
