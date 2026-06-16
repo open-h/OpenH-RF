@@ -52,11 +52,12 @@ The OpenH-RF format is implemented using the [`zea`](https://github.com/tue-bmd/
 | Example | Modality |
 |---------|----------|
 | [`echocardiography template`](examples/templates/echocardiography/convert.py) | Cardiac (phased array): focused transmits, ECG + clinical metadata, annotations |
-| [`color_doppler template`](examples/templates/color_doppler/convert.py) | Linear array (plane-wave): B-mode + color Doppler velocity map, ECG, annotations |
-| [`segmentation_map template`](examples/templates/segmentation_map/convert.py) | Raw RF data with per-frame segmentation masks and view labels |
+| [`color-doppler template`](examples/templates/color-doppler/convert.py) | Linear array (plane-wave): B-mode + color Doppler velocity map, ECG, annotations |
+| [`segmentation template`](examples/templates/segmentation/convert.py) | Raw RF data with per-frame segmentation masks and view labels |
 | [`verasonics template`](examples/templates/verasonics/convert.py) | Converting a real Verasonics `.mat` workspace to OpenH-RF |
 | [`nv-raw2insights-us/`](examples/nv-raw2insights-us/) | Worked example on a real public dataset: stream a sample from [NV-Raw2Insights-US](https://huggingface.co/datasets/nvidia/NV-Raw2Insights-US), convert to OpenH-RF, and beamform raw channel data back to a B-mode |
-| [`pala/`](examples/pala/) | Converting [PALA](https://zenodo.org/records/7883227) rat-brain plane-wave channel data from Zenodo to OpenH-RF format and beamforming to a B-mode |
+| [`pala-ulm-ratbrain/`](examples/pala-ulm-ratbrain/) | Converting [PALA](https://zenodo.org/records/7883227) rat-brain plane-wave channel data from Zenodo to OpenH-RF format and beamforming to a B-mode |
+| [`tracked-cirs-phantom/`](examples/tracked-cirs-phantom/) | Converting a tracked CIRS phantom acquisition to OpenH-RF, reconstructing a B-mode, and visualizing the tracked probe trajectory |
 | [`examples/save_pipeline_example.py`](examples/save_pipeline_example.py) | Saving a `zea` processing pipeline as a reusable YAML config |
 
 ## Setup
