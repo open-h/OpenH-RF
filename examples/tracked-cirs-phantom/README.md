@@ -1,3 +1,24 @@
+---
+pretty_name: "OpenH-RF — Tracked CIRS Phantom Simulation (lateral sweep)"
+license: cc-by-4.0
+task_categories:
+  - other
+tags:
+  - ultrasound
+  - rf
+  - openh-rf
+  - tracked-ultrasound
+  - freehand
+  - probe-pose
+  - phantom
+  - simulation
+  - beamforming
+language:
+  - en
+size_categories:
+  - n<1K
+---
+
 # Tracked CIRS Simulation -> OpenH-RF
 
 A worked example: convert one tracked CIRS phantom acquisition from
@@ -59,7 +80,7 @@ example repository.
 
 ## Dataset Creation Date
 
-11 June 2026
+06/11/2026
 
 ## License / Terms of Use
 
@@ -72,7 +93,7 @@ Serve as an example of how to convert a tracked ultrasound dataset into the Open
 
 ## Dataset Characterization
 
-- **Data collection method:** simulated phantom
+- **Data collection method:** simulated phantom (UltraRay ultrasound simulator)
 - **Labeling method:** derived tracking metadata; no segmentation or class labels
 - **Acquisition system:** simulated linear probe; probe geometry, element
   width, center frequency, and scan metadata are copied from the source
@@ -83,7 +104,7 @@ Serve as an example of how to convert a tracked ultrasound dataset into the Open
 ## Dataset Format
 
 The converted output is a single acquisition in the
-[`zea` file format](https://zea.readthedocs.io/en/v0.1.0a2/data-acquisition.html).
+[`zea` file format](https://zea.readthedocs.io/en/openh-rf-latest/data-acquisition.html).
 [`convert.py`](convert.py) downloads the source
 imaging and tracking files, preserves the RF arrays as `float32`, copies the
 scan metadata, derives frame-to-frame timing for the transmit schedule, and
