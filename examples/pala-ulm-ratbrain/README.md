@@ -80,16 +80,3 @@ A `zea.Pipeline` (DAS → tissue suppression → envelope detection → normaliz
 
 Animal experiments are described in the source publication (Heiles et al., 2022) and were carried out under the relevant institutional and national ethical approvals for animal research. Animal preparation and contrast-agent perfusion performed at the CYCERON biomedical imaging platform (Caen, France). No human subjects; no PHI.
 
-- **Species / strain:** rat, Sprague-Dawley
-- **Procedure:** craniotomy (skull removal); coronal-section brain imaging with
-  continuous intravenous microbubble (ultrasound contrast agent) perfusion
-- **Sample size:** one animal / one acquisition file in this packaged example
-- **Facility:** CYCERON biomedical imaging platform, Caen, France
-- **Regulatory framework:** animal research in France is governed by EU Directive
-  2010/63/EU and its French transposition
-
-> The specific ethics-committee approval / authorization number is held in the
-> source publication and is **not** reproduced here; transcribe it verbatim from
-> Heiles et al. (2022) for any formal submission. Anaesthesia, housing, and
-> husbandry details likewise live in the source and should be added if this
-> example is ever promoted to a tracked animal-data submission.
