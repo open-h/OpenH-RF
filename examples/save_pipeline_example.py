@@ -10,15 +10,15 @@ from raw RF ultrasound channel data to a final B-mode image. The pipeline will s
 most use cases, although certain data and applications require slight changes to the pipeline.
 For examples of configuration files see:
 
-- PICMUS: https://huggingface.co/datasets/zeahub/picmus/blob/main/config_rf.yaml
-- zea-cardiac-2026: https://huggingface.co/datasets/zeahub/zea-cardiac-2026/blob/main/config.yaml
-- zea-carotid-2023: https://huggingface.co/datasets/zeahub/zea-carotid-2023/blob/main/config.yaml
+- PICMUS: https://huggingface.co/datasets/zeahub/picmus/blob/v0.1.0/config_rf.yaml
+- zea-cardiac-2026: https://huggingface.co/datasets/zeahub/zea-cardiac-2026/blob/v0.1.0/config.yaml
+- zea-carotid-2023: https://huggingface.co/datasets/zeahub/zea-carotid-2023/blob/v0.1.0/config.yaml
 
 Which can be automatically loaded from Hugging Face using:
 
-- `config = zea.Config.from_path("hf://zeahub/picmus/config_rf.yaml")`
-- `config = zea.Config.from_path("hf://zeahub/zea-cardiac-2026/config.yaml")`
-- `config = zea.Config.from_path("hf://zeahub/zea-carotid-2023/config.yaml")`
+- `config = zea.Config.from_path("hf://zeahub/picmus/config_rf.yaml", revision="v0.1.0")`
+- `config = zea.Config.from_path("hf://zeahub/zea-cardiac-2026/config.yaml", revision="v0.1.0")`
+- `config = zea.Config.from_path("hf://zeahub/zea-carotid-2023/config.yaml", revision="v0.1.0")`
 
 """
 

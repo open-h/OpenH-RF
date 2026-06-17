@@ -4,7 +4,7 @@
 # RF data is demodulated before beamforming.
 
 parameters:
-  grid_size_x: 400
+  grid_size_x: 580
   grid_size_z: 600
   dynamic_range: [-40, 0]
   zlims: [0.0065, 0.058]

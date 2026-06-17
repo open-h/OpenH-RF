@@ -56,9 +56,17 @@ def main():
 
     # Convert the output tensor to a NumPy array and save as PNG
     recon = np.array(outputs["data"])  # (n_frames, grid_z, grid_x)
-    image = zea.display.to_8bit(recon[0])
-    plt.imshow(image, extent=parameters.extent_imshow, cmap="gray")
-    plt.savefig(str(args.output))
+    image = zea.display.to_8bit(recon[0], dynamic_range=parameters.dynamic_range)
+
+    zea.visualize.set_mpl_style()
+    plt.imshow(
+        image,
+        extent=parameters.extent_imshow,
+        cmap="gray",
+    )
+    plt.xlabel("X (mm)")
+    plt.ylabel("Z (mm)")
+    plt.savefig(str(args.output), bbox_inches="tight", dpi=100)
 
     print(f"Reconstructed  : {recon.shape}")
     print(f"Saved          : {args.output}")
