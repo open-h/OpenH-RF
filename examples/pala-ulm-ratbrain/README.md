@@ -75,7 +75,6 @@ A `zea.Pipeline` (DAS → tissue suppression → envelope detection → normaliz
 ## Known Issues
 
 - Element width is not stored in the source file and is estimated at 0.09 mm (90% of the 0.1 mm pitch).
-- The IQ channel data is uncalibrated ADC output (arbitrary units), not an absolute voltage measurement; only relative amplitudes are meaningful.
 
 ## Ethical Considerations
 
