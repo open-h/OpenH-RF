@@ -78,12 +78,7 @@ A `zea.Pipeline` (DAS → tissue suppression → envelope detection → normaliz
 
 ## Ethical Considerations
 
-This is in vivo **animal** data — there are no human subjects and no PHI. The
-animal experiments were performed and ethically approved as described in the
-source publication (Heiles et al., *Nature Biomedical Engineering*, 2022); the
-specific protocol approval and regulatory authorization are documented there.
-
-ARRIVE 2.0 reporting (from the source, aggregate):
+Animal experiments are described in the source publication (Heiles et al., 2022) and were carried out under the relevant institutional and national ethical approvals for animal research. Animal preparation and contrast-agent perfusion performed at the CYCERON biomedical imaging platform (Caen, France). No human subjects; no PHI.
 
 - **Species / strain:** rat, Sprague-Dawley
 - **Procedure:** craniotomy (skull removal); coronal-section brain imaging with
