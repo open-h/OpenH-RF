@@ -59,7 +59,7 @@ Submitted in the [`zea` file format](https://zea.readthedocs.io/en/v0.1.0a3/data
 
 | Field | Shape | dtype | Units | Description |
 |---|---|---|---|---|
-| `raw_data` | `(800, 5, 256, 128, 2)` | float32 | a.u. | IQ channel data: frames × transmits × axial × elements × {I, Q} |
+| `raw_data` | `(800, 5, 256, 128, 2)` | float32 | — | IQ channel data: frames × transmits × axial × elements × {I, Q} |
 | `scan.polar_angles` | `(5,)` | float32 | rad | Plane-wave steering angles |
 | `scan.t0_delays` | `(5, 128)` | float32 | s | Transmit delays per element |
 | `probe.probe_geometry` | `(128, 3)` | float32 | m | Element positions |
