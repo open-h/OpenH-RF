@@ -42,6 +42,7 @@ def convert(path: Path, output_path: Path) -> Path:
     with h5py.File(path, "r") as file:
         probe_geometry, probe_name = _probe_geometry(file)
         rf = file["rf"]["rf"]
+        us_probe = file["rf"]["us_probe"]
 
         sound_speed = _scalar(rf.attrs["speed_of_sound_m_per_s"])
         center_frequency = _scalar(rf.attrs["demod_frequency_MHz"]) * 1e6
@@ -65,9 +66,17 @@ def convert(path: Path, output_path: Path) -> Path:
             np.float32
         )
 
-        # Element width is not stored in the file; 90 % of the pitch is a reasonable guess.
-        pitch = 0.1e-3
-        element_width = 0.9 * pitch
+        probe_center_frequency = _scalar(us_probe.attrs["frequency_MHz"]) * 1e6
+        bw_hz = us_probe.attrs["bandwidth_MHz"]
+        probe_bandwidth_percent = float((bw_hz[1] - bw_hz[0]) / (probe_center_frequency / 1e6) * 100)
+
+        # PRF_Hz uses max-int16 as a sentinel when not set; derive from framerate × num_angles.
+        prf_hz = _scalar(rf.attrs["PRF_Hz"])
+        if prf_hz >= 32767:
+            prf_hz = _scalar(rf.attrs["framerate_Hz"]) * _scalar(rf.attrs["num_angles"])
+        time_to_next_transmit = 1.0 / prf_hz
+
+        element_width = _scalar(us_probe.attrs["element_width_mm"]) * 1e-3
 
     data = {"raw_data": raw_data}
 
@@ -76,6 +85,8 @@ def convert(path: Path, output_path: Path) -> Path:
         "type": "linear",
         "probe_geometry": probe_geometry,
         "element_width": element_width,
+        "probe_center_frequency": probe_center_frequency,
+        "probe_bandwidth_percent": probe_bandwidth_percent,
     }
 
     scan = {
@@ -92,6 +103,7 @@ def convert(path: Path, output_path: Path) -> Path:
         "transmit_origins": np.zeros((n_tx, 3), dtype=np.float32),
         "waveforms_two_way": waveforms_two_way,
         "waveforms_one_way": waveforms_one_way,
+        "time_to_next_transmit": time_to_next_transmit,
     }
 
     metadata = {
@@ -101,10 +113,11 @@ def convert(path: Path, output_path: Path) -> Path:
             "Nature Biomedical Engineering, 2022, (doi.org/10.1038/s41551-021-00824-8). "
             "Original data available at https://zenodo.org/records/7883227"
         ),
-        "subject": {"type": "animal"},
+        "subject": {"type": "rat", "id": "RF_002"},
         "annotations": {
             "anatomy": "brain",
             "label": "in vivo",
+            "view": "coronal",
         },
     }
 
@@ -114,11 +127,7 @@ def convert(path: Path, output_path: Path) -> Path:
         scan=scan,
         probe=probe,
         metadata=metadata,
-        description=(
-            f"PALA in-vivo rat brain ultrasound localization microscopy data.\n"
-            f"Note:\n"
-            f"- Element width is guessed at {element_width * 1e3:.1f} mm."
-        ),
+        description="PALA in-vivo rat brain ultrasound localization microscopy data.",
         overwrite=True,
     )
     return output_path
