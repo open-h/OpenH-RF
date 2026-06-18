@@ -68,7 +68,9 @@ def convert(path: Path, output_path: Path) -> Path:
 
         probe_center_frequency = _scalar(us_probe.attrs["frequency_MHz"]) * 1e6
         bw_hz = us_probe.attrs["bandwidth_MHz"]
-        probe_bandwidth_percent = float((bw_hz[1] - bw_hz[0]) / (probe_center_frequency / 1e6) * 100)
+        probe_bandwidth_percent = float(
+            (bw_hz[1] - bw_hz[0]) / (probe_center_frequency / 1e6) * 100
+        )
 
         # PRF_Hz uses max-int16 as a sentinel when not set; derive from framerate × num_angles.
         prf_hz = _scalar(rf.attrs["PRF_Hz"])
