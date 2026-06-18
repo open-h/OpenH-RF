@@ -87,9 +87,7 @@ def compound_volume(bmode, coordinates, translations, rotations, voxel_size_m):
     dims = np.maximum(np.ceil((upper - origin) / voxel_size_m).astype(int) + 1, 2)
 
     volume = np.zeros(dims, dtype=np.uint8).ravel()
-    frame_values = zea.display.to_8bit(
-        bmode[:, ::IMAGE_STRIDE, ::IMAGE_STRIDE], pillow=False
-    )
+    frame_values = zea.display.to_8bit(bmode[:, ::IMAGE_STRIDE, ::IMAGE_STRIDE], pillow=False)
     for pts, values in zip(world_points, frame_values):
         voxel_idx = np.clip(np.rint((pts - origin) / voxel_size_m).astype(int), 0, dims - 1)
         np.maximum.at(volume, np.ravel_multi_index(voxel_idx.T, dims), values.reshape(-1))
@@ -174,9 +172,7 @@ def main():
     translations, rotations = interpolate_frame_poses(
         metadata.probe_pose, frame_times[frame_indices]
     )
-    volume, origin = compound_volume(
-        bmode, coordinates, translations, rotations, VOXEL_SIZE_M
-    )
+    volume, origin = compound_volume(bmode, coordinates, translations, rotations, VOXEL_SIZE_M)
     render_volume(volume, origin, VOXEL_SIZE_M, args.output_dir, args.live)
 
 

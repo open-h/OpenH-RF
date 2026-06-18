@@ -25,11 +25,7 @@ from zea.ops import (
 
 def load_probe_pose(path, image_times_ns):
     """Parse timestamped 4x4 tracking matrices into ``zea`` probe-pose metadata."""
-    rows = [
-        line.split()
-        for line in path.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+    rows = [line.split() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
     # Each row is a flattened 4x4 pose matrix followed by an absolute ns timestamp.
     matrices = np.asarray([row[:16] for row in rows], dtype=np.float64).reshape(-1, 4, 4)
     pose_times_ns = np.asarray([row[16] for row in rows], dtype=np.int64)

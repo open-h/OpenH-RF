@@ -38,6 +38,7 @@ _MIN_ZEA_VERSION = "0.1.0a3"
 def _version_lt(v: str, minimum: str) -> bool:
     """Return True if version string v is older than minimum."""
     from packaging.version import Version  # type: ignore[import]
+
     try:
         return Version(v) < Version(minimum)
     except Exception:  # noqa: BLE001

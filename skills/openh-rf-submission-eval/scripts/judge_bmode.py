@@ -42,8 +42,7 @@ def judge(image: np.ndarray) -> dict:
     }
     checks["is_finite"] = {
         "passed": bool(np.all(np.isfinite(image))),
-        "detail": f"nan_count={int(np.isnan(image).sum())}, "
-                  f"inf_count={int(np.isinf(image).sum())}",
+        "detail": f"nan_count={int(np.isnan(image).sum())}, inf_count={int(np.isinf(image).sum())}",
     }
 
     # 2. Not degenerate
@@ -61,8 +60,7 @@ def judge(image: np.ndarray) -> dict:
     checks["dynamic_range_plausible"] = {
         # Either normalized to [0, 1] with some spread, or dB-scale
         "passed": 0.05 < rng < 200,
-        "detail": f"range={rng:.4g}, min={float(image.min()):.4g}, "
-                  f"max={float(image.max()):.4g}",
+        "detail": f"range={rng:.4g}, min={float(image.min()):.4g}, max={float(image.max()):.4g}",
     }
 
     # 4. Spatial structure — variance along each axis
