@@ -41,7 +41,7 @@ Scan everywhere strings or numbers appear — data card prose, zea file attribut
 - `acquisition_datetime` — must be truncated to year only (or removed) for human data, per identifier #3.
 - `operator_name`, `sonographer` — not subject identifiers, but identifier #1 still applies if a relative or household member of the subject. Generally these should be removed or replaced with role labels.
 - Device serial numbers — identifier #13 applies only if traceable to an individual scan session. Model name + general probe info is fine; specific serial numbers should be evaluated.
-- Filenames — strip identifiers from filenames too. `scan_jsmith_20240603.zea` triggers identifiers #1 and #3.
+- Filenames — strip identifiers from filenames too. `scan_jsmith_20240603.hdf5` triggers identifiers #1 and #3.
 
 ## Re-identification codes
 

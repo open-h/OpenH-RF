@@ -10,7 +10,7 @@ The submission is actually in the *zea* file format and the on-disk structure ma
 
 ## Artifacts you need
 
-- The `.zea` / `.hdf5` file(s) in the submission
+- The `.hdf5` file(s) in the submission (zea files are standard HDF5; `zea.File` is a thin wrapper around `h5py.File`)
 - `scripts/validate_zea_spec.py` — **the authoritative, programmatic compliance check**
 - `references/zea-format-notes.md` — human-readable companion (may lag the installed spec; the script is ground truth)
 

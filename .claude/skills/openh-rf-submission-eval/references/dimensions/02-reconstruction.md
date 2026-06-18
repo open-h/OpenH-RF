@@ -36,13 +36,22 @@ Order this check after dimensions 1 and 3. If the file is malformed (dim 1 block
 
 ## Standard reconstruction chain
 
-The contributor's script may differ, but conventionally a zea B-mode pipeline is:
+The default zea B-mode pipeline (obtained via `zea.Pipeline.from_default()`) is:
 
 ```
-DAS beamforming → envelope detection (Hilbert) → log compression → normalization
+Cast -> ApplyWindow -> Demodulate -> Beamform(PatchedGrid(TOFCorrection -> DelayAndSum) -> ReshapeGrid) -> EnvelopeDetect -> Normalize -> LogCompress
 ```
 
-More exotic pipelines (MV beamforming, plane-wave compounding, REFoCUS) are fine — but should still terminate in a 2D log-compressed image.
+Key points when evaluating contributor pipelines:
+- **`Cast(dtype="float32")`** — most acquisitions store raw data as `int16`; a cast is required before any float operations.
+- **`Demodulate`** — pass-through for IQ data (`n_ch=2`), but required for RF data (`n_ch=1`) to demodulate before beamforming (faster + better envelope detection). A pipeline that omits it will silently produce degraded results on RF data.
+- The full canonical pipeline docs are at <https://zea.readthedocs.io/en/openh-rf-latest/pipeline.html>.
+
+The default pipeline is a starting point — submitters are expected to adapt it to their data and use case. Different beamformers, custom grid parameters, additional pre/post-processing steps, or domain-specific operations are all valid. `zea.Pipeline` is flexible enough to express any chain. What matters for this dimension is that the output is a sensible 2D log-compressed image and the pipeline runs without modification on the submission data.
+
+Submitters supply **one `pipeline.yaml` per track** in their file. Most submissions are single-track, so there is typically exactly one.
+
+**Submitted B-mode images must be `.png` files.** Contributors supply a reference `.png` output from `reconstruct.py`. If a contributor has submitted a `.npy` or other binary format as the "reference image", flag it as `minor` — the submission guide requires `.png` for quick visual verification. (If they want to supply raw B-mode array data, the `.hdf5` file's `/data/image` group is the right place.)
 
 ## Severity rubric
 

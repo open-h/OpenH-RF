@@ -87,6 +87,6 @@ Run a quick scan for these patterns in the data card and in any zea file attribu
 - All-caps strings that could be names ("PATIENT: J SMITH")
 - Strings matching MRN/medical record number formats
 - ZIP+4 codes, full street addresses
-- Filenames that include subject identifiers (e.g., "patient_jsmith_01.zea")
+- Filenames that include subject identifiers (e.g., "patient_jsmith_01.hdf5")
 
 Any hit on these is a `blocker`. Report the exact location and stop dimension processing for that field.

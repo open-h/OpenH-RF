@@ -7,6 +7,11 @@ reference — that is done by the dimension-2 evaluator viewing the rendered
 image directly (multimodal vision). This script only answers: did the pipeline
 plausibly produce a real image rather than noise, a constant, or NaNs?
 
+Accepts a .png file (the required submission format). Submitters must supply a
+.png reference image, not a .npy array — the submission guide specifies .png for
+quick visual verification. If raw B-mode array data is desired, it belongs in the
+.hdf5 file under /data/image.
+
 (SSIM-vs-reference was removed: B-mode reconstructions and stored references
 typically live on different physical grids / scales and are not pixel-registered,
 which makes SSIM collapse toward zero even for visually-matching images. The
@@ -80,11 +85,22 @@ if __name__ == "__main__":
     import argparse
     import json
 
+    import matplotlib.pyplot as plt
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("image_npy", type=Path,
-                        help="Path to .npy file containing the reconstructed image")
+    parser.add_argument(
+        "image_png",
+        type=Path,
+        help="Path to .png file containing the reconstructed B-mode image",
+    )
     args = parser.parse_args()
 
-    img = np.load(args.image_npy)
+    # imread returns float32 in [0, 1] for PNG; collapse RGB → grayscale if needed.
+    raw = plt.imread(str(args.image_png))
+    if raw.ndim == 3:
+        img = raw.mean(axis=2)
+    else:
+        img = raw
+
     result = judge(img)
     print(json.dumps(result, indent=2))

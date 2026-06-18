@@ -32,12 +32,25 @@ from pathlib import Path
 os.environ.setdefault("KERAS_BACKEND", "jax")
 
 
+_MIN_ZEA_VERSION = "0.1.0a3"
+
+
+def _version_lt(v: str, minimum: str) -> bool:
+    """Return True if version string v is older than minimum."""
+    from packaging.version import Version  # type: ignore[import]
+    try:
+        return Version(v) < Version(minimum)
+    except Exception:  # noqa: BLE001
+        return False  # unknown format — don't block
+
+
 def validate(path: Path) -> dict:
     import zea
 
     result = {
         "path": str(path),
         "zea_version": zea.__version__,
+        "file_zea_version": None,
         "compliant": False,
         "top_level_groups": [],
         "data_groups": [],
@@ -47,6 +60,8 @@ def validate(path: Path) -> dict:
     try:
         with zea.File(str(path)) as f:
             result["top_level_groups"] = sorted(f.keys())
+            # Record the zea version that wrote this file (stored as a root attr).
+            result["file_zea_version"] = f.attrs.get("zea_version", None)
             if "data" in f:
                 result["data_groups"] = sorted(f["data"].keys())
                 result["has_raw_data"] = "raw_data" in f["data"]
@@ -59,13 +74,29 @@ def validate(path: Path) -> dict:
     except Exception as e:  # noqa: BLE001 - any spec violation is a finding
         result["errors"].append(f"{type(e).__name__}: {e}")
 
-    # OpenH-RF hard requirement, independent of spec construction.
+    # OpenH-RF hard requirement: raw channel data must be present.
     if not result["has_raw_data"]:
         result["compliant"] = False
         result["errors"].append(
             "BLOCKER: /data/raw_data is missing — raw pre-beamformed channel "
             "capture data is mandatory for every OpenH-RF submission."
         )
+
+    # OpenH-RF hard requirement: minimum zea version v0.1.0a3.
+    file_ver = result["file_zea_version"]
+    if file_ver is None:
+        result["compliant"] = False
+        result["errors"].append(
+            f"BLOCKER: zea_version attribute not found in file root. "
+            f"Minimum required version is {_MIN_ZEA_VERSION}."
+        )
+    elif _version_lt(str(file_ver), _MIN_ZEA_VERSION):
+        result["compliant"] = False
+        result["errors"].append(
+            f"BLOCKER: file was written with zea {file_ver}, "
+            f"but minimum required version is {_MIN_ZEA_VERSION}."
+        )
+
     return result
 
 

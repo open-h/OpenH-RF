@@ -58,6 +58,7 @@ The OpenH-RF format is implemented using the [`zea`](https://github.com/tue-bmd/
 | [`nv-raw2insights-us/`](examples/nv-raw2insights-us/) | Worked example on a real public dataset: stream a sample from [NV-Raw2Insights-US](https://huggingface.co/datasets/nvidia/NV-Raw2Insights-US), convert to OpenH-RF, and beamform raw channel data back to a B-mode |
 | [`pala-ulm-ratbrain/`](examples/pala-ulm-ratbrain/) | Converting [PALA](https://zenodo.org/records/7883227) rat-brain plane-wave channel data from Zenodo to OpenH-RF format and beamforming to a B-mode |
 | [`tracked-cirs-phantom/`](examples/tracked-cirs-phantom/) | Converting a tracked CIRS phantom acquisition to OpenH-RF, reconstructing a B-mode, and visualizing the tracked probe trajectory |
+| [`examples/reconstruct_example.py`](examples/reconstruct_example.py) | Reconstructing a B-mode image from raw RF channel data using the default `zea` pipeline |
 | [`examples/save_pipeline_example.py`](examples/save_pipeline_example.py) | Saving a `zea` processing pipeline as a reusable YAML config |
 
 ## Setup

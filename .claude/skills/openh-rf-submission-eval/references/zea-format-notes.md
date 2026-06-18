@@ -8,16 +8,28 @@
 > spotting recommended-but-not-required fields; if they ever disagree with the
 > installed zea spec, **the installed spec wins**.
 
-The authoritative human-readable spec is the OpenH-RF docs channel, which always
-tracks the latest accepted revision of the data-acquisition format:
+## Live documentation — fetch these instead of relying on the summary below
 
-- **<https://zea.readthedocs.io/en/openh-rf-latest/data-acquisition.html>** — the spec
-- <https://zea.readthedocs.io/en/openh-rf-latest/> — full zea docs (pipeline, ops, beamforming, config)
-- <https://github.com/tue-bmd/zea> — source
+These pages are accessible to agents via WebFetch and are always up to date:
 
-The summary below mirrors that page so an evaluator can interpret findings without
-leaving the skill. SI units throughout (Hz, s, m, V, rad); field names are
-`snake_case`.
+| Page | Content |
+|---|---|
+| **<https://zea.readthedocs.io/en/openh-rf-latest/data-acquisition.html>** | Full field-level spec: groups, dtypes, shapes, units, required vs optional |
+| <https://zea.readthedocs.io/en/openh-rf-latest/pipeline.html> | Pipeline ops, `Pipeline.from_default()`, `return_numpy`, device selection |
+| <https://zea.readthedocs.io/en/openh-rf-latest/> | Full zea docs index |
+| <https://github.com/tue-bmd/zea> | Source (use for version history / changelog) |
+
+**When in doubt, fetch the live spec page** — the summary below is a quick-reference digest and may lag the installed version.
+
+## Minimum version
+
+Every OpenH-RF submission must have been written with **zea ≥ v0.1.0a3** (recorded as the `zea_version` attribute at the HDF5 root). Files from v0.1.0a2 or earlier are ineligible — flag as `blocker`.
+
+## Key facts (quick reference)
+
+A zea file is standard HDF5. `zea.File` is a thin wrapper around `h5py.File`. Files have a `.hdf5` extension — there is no `.zea` extension.
+
+SI units throughout (Hz, s, m, V, rad); field names are `snake_case`.
 
 ## Top-level structure
 
@@ -135,6 +147,8 @@ Root: `credit` (str), `text_report` (str). Sub-groups:
 ## `/metrics` — quality (optional)
 
 `common_midpoint_phase_error` `(n_frames)`, `coherence_factor` `(n_frames)`.
+
+> The field tables above are a digest. For complete dtype, shape, and unit details fetch <https://zea.readthedocs.io/en/openh-rf-latest/data-acquisition.html>.
 
 ## Things that must never be there
 

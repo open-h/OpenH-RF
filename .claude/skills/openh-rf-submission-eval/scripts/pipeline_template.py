@@ -5,50 +5,62 @@ Used by the openh-rf-submission-eval skill when a submission is missing
 its reconstruction script. Fill in / adjust the operations as needed, then
 run against the submission's zea file.
 
-Standard chain:
-    raw channel data -> DAS beamforming -> envelope detection -> normalize -> log compression
+The default zea B-mode pipeline is:
 
-The canonical Pipeline docs are at
-https://zea.readthedocs.io/en/openh-rf-latest/pipeline.html. The working pattern
-(against the openh-rf-latest zea spec) is:
+    Cast -> ApplyWindow -> Demodulate -> Beamform(PatchedGrid(TOFCorrection -> DelayAndSum) -> ReshapeGrid) -> EnvelopeDetect -> Normalize -> LogCompress
 
-    pipeline   = zea.Pipeline(operations=[...])            # or Pipeline.from_path("pipeline.yaml")
-    parameters = f.load_parameters()                       # scan + probe + grid, from the file
-    inputs     = pipeline.prepare_parameters(parameters)
-    image      = pipeline(**{pipeline.key: raw}, **inputs)[pipeline.output_key][frame]
-"""
+Obtained via ``zea.Pipeline.from_default()``. Key notes:
+- Cast(dtype="float32"): most acquisitions store raw_data as int16; this cast
+  is required before any float operations.
+- Demodulate: pass-through for IQ data (n_ch=2), required for RF data (n_ch=1).
+  Demodulating before beamforming gives faster processing and better envelope
+  detection. Including it makes the pipeline work correctly for both modalities.
+
+This default pipeline is a useful starting point, but submitters will often need
+to make adjustments for their specific data or use case — different beamformers,
+custom grid parameters, additional pre/post-processing, etc. zea.Pipeline is
+flexible: any sequence of operations is valid as long as the output is a 2D
+log-compressed B-mode image. Submitters supply one pipeline.yaml per track in
+their file (in practice, most submissions are single-track and have exactly one).
+
+Minimum required zea version: v0.1.0a3 (stored as ``zea_version`` in the HDF5
+file). Files written with v0.1.0a2 or earlier are not eligible for OpenH-RF.
+
+The working pattern is:
+
+    with zea.File(str(zea_path)) as f:
+        parameters = f.load_parameters()
+        raw = f.data.raw_data[:]
+
+    pipeline = zea.Pipeline.from_default()         # or Pipeline.from_path("pipeline.yaml")
+    inputs   = pipeline.prepare_parameters(parameters)
+    outputs  = pipeline(**{pipeline.key: raw}, **inputs, return_numpy=True)
+    image    = outputs[pipeline.output_key][frame_index]  # 2D float, log-compressed dB
+
+Canonical pipeline docs: https://zea.readthedocs.io/en/openh-rf-latest/pipeline.html
+"""  # noqa: E501
 
 import os
 from pathlib import Path
 
+import numpy as np
+
 # Default to the jax backend (installed by `uv sync`) before importing zea.
 os.environ.setdefault("KERAS_BACKEND", "jax")
 
-import numpy as np
 import zea
-from zea.ops import Beamform, EnvelopeDetect, LogCompress, Normalize
 
 
-def build_pipeline() -> "zea.Pipeline":
-    """Construct a default DAS -> envelope -> normalize -> log-compress pipeline.
+def build_pipeline() -> zea.Pipeline:
+    """Return the default zea B-mode pipeline.
 
-    The operations are geometry-agnostic; per-acquisition parameters (probe
-    geometry, sound speed, sampling frequency, transmit sequence, grid) are
-    derived from the zea file at run time via ``load_parameters`` +
-    ``prepare_parameters`` — this is what makes the pipeline portable across
-    submissions.
+    Uses Pipeline.from_default() which produces:
+        Cast -> ApplyWindow -> Demodulate -> Beamform(...)
+        -> EnvelopeDetect -> Normalize -> LogCompress
+
+    Adjust operations as needed for your specific data or use case.
     """
-    return zea.Pipeline(
-        operations=[
-            Beamform(
-                beamformer="delay_and_sum",
-                num_patches=200,  # raise if you hit out-of-memory during beamforming
-            ),
-            EnvelopeDetect(),
-            Normalize(),
-            LogCompress(),
-        ]
-    )
+    return zea.Pipeline.from_default()
 
 
 def reconstruct(
@@ -63,15 +75,16 @@ def reconstruct(
     zea.init_device()
     with zea.File(str(zea_path)) as f:
         # load_parameters merges scan + probe and derives the reconstruction
-        # grid from the file (a single-track file; for multi-track use
+        # grid from the file (single-track file; for multi-track use
         # f.tracks[i].load_parameters() / f.tracks[i].data.raw_data).
         parameters = f.load_parameters()
         raw = f.data.raw_data[:]
 
     pipeline = pipeline or build_pipeline()
     inputs = pipeline.prepare_parameters(parameters)
-    outputs = pipeline(**{pipeline.key: raw}, **inputs)
-    return np.asarray(outputs[pipeline.output_key])[frame_index]
+    # return_numpy=True uses keras.ops.convert_to_numpy for multi-backend support.
+    outputs = pipeline(**{pipeline.key: raw}, **inputs, return_numpy=True)
+    return outputs[pipeline.output_key][frame_index]
 
 
 if __name__ == "__main__":
