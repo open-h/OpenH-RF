@@ -50,17 +50,25 @@ def main():
             allow_accumulate=True,
         )
 
+        # extract probe parameters from the verasonics .mat file
+        probe = vf.probe.to_probe_spec()
+
         # Generate the zea dataset
         log.info("Generating zea dataset...")
         File.create(
             path=str(args.output),
             data=data_dict,
             scan=scan_dict,
-            probe=vf.probe.to_probe_spec(),
-            description=(
-                "Verasonics Vantage 256 - CIRS phantom plane-wave acquisition (from .mat file)"
-            ),
+            probe=probe,
+            description=("Verasonics Vantage 256 - CIRS phantom plane-wave acquisition."),
             overwrite=True,
+            metadata={
+                "subject": {
+                    "type": "phantom",
+                    "id": "cirs-001",
+                },
+                "credit": "Whoever collected this dataset",
+            },
         )
 
     print(f"Saved: {args.output}  ({args.output.stat().st_size / 1e6:.1f} MB)")
