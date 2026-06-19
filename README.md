@@ -75,6 +75,8 @@ uv run python examples/save_pipeline_example.py
 
 `uv sync` creates `.venv/` and installs dependencies listed in `pyproject.toml`. Run any script with `uv run python <script>.py`, or activate the venv with `source .venv/bin/activate`.
 
+`zea` is pinned in `uv.lock` to a specific commit of the moving [`openh-rf-latest`](https://github.com/tue-bmd/zea/tree/openh-rf-latest) tag, so every clone builds against the same spec. When the spec advances and you want the newer `zea`, bump the pin with `uv lock --upgrade-package zea` and commit the updated `uv.lock`.
+
 Pick a backend / accelerator with extras:
 
 | Use case | Command |

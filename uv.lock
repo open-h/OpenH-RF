@@ -5066,8 +5066,8 @@ wheels = [
 
 [[package]]
 name = "zea"
-version = "0.1.0a4"
-source = { git = "https://github.com/tue-bmd/zea.git?rev=openh-rf-latest#dd0375bcf2cd3f438f45802f24627d288e0b1c2d" }
+version = "0.1.0a5"
+source = { git = "https://github.com/tue-bmd/zea.git?rev=openh-rf-latest#dd21089228402dcefa93441553f4077fc989829d" }
 dependencies = [
     { name = "decorator" },
     { name = "grain", version = "0.2.13", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
