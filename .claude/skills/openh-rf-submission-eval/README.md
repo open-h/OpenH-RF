@@ -44,25 +44,23 @@ openh-rf-submission-eval/
 
 ## How to install
 
-The skill lives in [`skills/openh-rf-submission-eval/`](../../skills/openh-rf-submission-eval/)
-inside the OpenH-RF repo — clone the repo and the skill comes with it.
+### As a Claude Code skill
+
+Clone this repo into your Claude Code skills directory:
 
 ```bash
-git clone <repo-url>
-cd OpenH-RF
-uv sync
+git clone <repo-url> ~/.claude/skills/openh-rf-submission-eval
 ```
 
-**Claude Code** — the skill is in `skills/`, not `.claude/skills/`, so it is
-not auto-discovered. To wire it up, either symlink the directory:
+(Or your project-local `.claude/skills/` if you prefer.)
+
+### As a packaged .skill file
 
 ```bash
-mkdir -p .claude/skills
-ln -s "$(pwd)/skills/openh-rf-submission-eval" .claude/skills/openh-rf-submission-eval
+# Using the skill-creator packaging script
+python -m scripts.package_skill /path/to/openh-rf-submission-eval
+# Produces openh-rf-submission-eval.skill, which can be uploaded in Claude.ai
 ```
-
-or reference `skills/openh-rf-submission-eval/SKILL.md` directly from your
-`CLAUDE.md`.
 
 ## How to use
 

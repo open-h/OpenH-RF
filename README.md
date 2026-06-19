@@ -90,10 +90,6 @@ Set the matching `KERAS_BACKEND` (`jax`, `torch`, or `tensorflow`) before runnin
 > [!NOTE]
 > On Windows, use WSL2.
 
-## Skills
-
-We developed a skill for evaluating contributor submissions. It is designed to be run by an AI agent (Claude Code, Codex CLI, OpenCode, etc.) and produce a structured evaluation report. It is recommended to run the skill after you have a submission ready. The skill is located in [`skills/`](skills/). See also the [AGENTS.md](AGENTS.md) documentation for agent integration instructions.
-
 ## Contact
 
 - **Technical questions** — [openh.data+rf@gmail.com](mailto:openh.data+rf@gmail.com)
