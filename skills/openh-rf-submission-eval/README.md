@@ -46,13 +46,22 @@ openh-rf-submission-eval/
 
 ### As a Claude Code skill
 
-Clone this repo into your Claude Code skills directory:
+The skill lives at `skills/openh-rf-submission-eval/` in the OpenH-RF repo, with
+a committed `.claude/skills/openh-rf-submission-eval` symlink pointing at it.
+Clone the repo and Claude Code auto-discovers the skill with no extra setup — on
+Linux/macOS/WSL2; on native Windows, enable Developer Mode or use WSL2 so git
+materializes the symlink rather than a plain text file.
 
 ```bash
-git clone <repo-url> ~/.claude/skills/openh-rf-submission-eval
+git clone <repo-url>
 ```
 
-(Or your project-local `.claude/skills/` if you prefer.)
+To use it outside this repo, symlink (or copy) the skill into your personal
+skills directory:
+
+```bash
+ln -s "$(pwd)/skills/openh-rf-submission-eval" ~/.claude/skills/openh-rf-submission-eval
+```
 
 ### As a packaged .skill file
 

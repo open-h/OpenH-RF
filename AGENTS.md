@@ -5,24 +5,30 @@ Copilot CLI, Gemini CLI, etc.) operating on this repository.
 
 ## Skills
 
-Project skills live under [`.claude/skills/`](./.claude/skills/), following the
-[Claude skill layout](https://docs.claude.com/en/docs/claude-code/skills). Each
-skill is a directory containing a `SKILL.md` plus any `references/` and
-`scripts/` it needs. The layout is just a directory of portable markdown, so
-non-Claude tools can read the same `SKILL.md` directly.
+Project skills live under [`skills/`](./skills/) — a top-level, agent-agnostic
+location. Each skill is a directory containing a `SKILL.md` plus any
+`references/` and `scripts/` it needs; the layout is portable markdown that any
+agent can read directly.
+
+For **Claude Code**, which auto-discovers skills under `.claude/skills/`, a
+committed symlink `.claude/skills/<name> → ../../skills/<name>` makes each skill
+discoverable with zero setup. The symlink resolves on Linux/macOS and WSL2; on
+native Windows, enable Developer Mode or use WSL2 so git materializes the
+symlink rather than a plain text file (see the [main README](./README.md) — the
+supported platforms are Linux and WSL2).
 
 Available skills:
 
 | Skill | Purpose |
 |---|---|
-| [`.claude/skills/openh-rf-submission-eval/`](./.claude/skills/openh-rf-submission-eval/) | Evaluate a contributor submission to the OpenH-RF initiative against the RFP and submission guide. Produces a structured acceptance report. |
+| [`skills/openh-rf-submission-eval/`](./skills/openh-rf-submission-eval/) | Evaluate a contributor submission to the OpenH-RF initiative against the RFP and submission guide. Produces a structured acceptance report. |
 
 ### Invocation per tool
 
-- **Claude Code** — auto-discovered from `.claude/skills/`; invoke via the `Skill` tool (or it triggers automatically when relevant).
-- **OpenAI Codex CLI** — point Codex at `.claude/skills/<name>/SKILL.md` via its agent/instruction config.
-- **OpenCode** — load `.claude/skills/<name>/SKILL.md` via the project agent loader.
-- **Other** — read `.claude/skills/<name>/SKILL.md` directly; the front-matter YAML names the skill and describes its trigger conditions.
+- **Claude Code** — auto-discovered via the committed `.claude/skills/` symlink; invoke via the `Skill` tool (or it triggers automatically when relevant).
+- **OpenAI Codex CLI** — point Codex at `skills/<name>/SKILL.md` via its agent/instruction config.
+- **OpenCode** — load `skills/<name>/SKILL.md` via the project agent loader.
+- **Other** — read `skills/<name>/SKILL.md` directly; the front-matter YAML names the skill and describes its trigger conditions.
 
 The `SKILL.md` content is portable markdown. Only the discovery mechanism is
 tool-specific — the rubrics, references, and scripts travel cleanly.
