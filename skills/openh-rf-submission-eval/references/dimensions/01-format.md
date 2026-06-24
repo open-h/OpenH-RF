@@ -11,14 +11,14 @@ The submission is actually in the *zea* file format and the on-disk structure ma
 ## Artifacts you need
 
 - The `.hdf5` file(s) in the submission (zea files are standard HDF5; `zea.File` is a thin wrapper around `h5py.File`)
-- `scripts/validate_zea_spec.py` — **the authoritative, programmatic compliance check**
-- `references/zea-format-notes.md` — human-readable companion (may lag the installed spec; the script is ground truth)
+- `../../../openh-rf-shared/validate_zea_spec.py` — **the authoritative, programmatic compliance check**
+- `zea.data.spec.{DataSpec, ScanSpec, ProbeSpec, MetadataSpec}` and <https://zea.readthedocs.io/en/openh-rf-latest/> — human-readable reference (the script is still ground truth when in doubt)
 
 **Do not read:** the data card, pipeline script, or any prose. This dimension is purely about the file on disk.
 
 ## Checks
 
-0. **Run `scripts/validate_zea_spec.py <file>` first — this is the authoritative check.** It opens the file with zea and runs zea's own validators — `File.validate` (structural) and `File.validate_spec` (full dtype / shape / dimension-consistency) — *against the zea version installed in the eval environment* (recorded as `zea_version` in the output). Read the JSON:
+0. **Run `../../../openh-rf-shared/validate_zea_spec.py <file>` first — this is the authoritative check.** It opens the file with zea and runs zea's own validators — `File.validate` (structural) and `File.validate_spec` (full dtype / shape / dimension-consistency) — *against the zea version installed in the eval environment* (recorded as `zea_version` in the output). Read the JSON:
    - `compliant: true` → the file satisfies the installed zea spec. Proceed to the checks below only for items the spec does not cover (units conventions, NaN/Inf spot-checks, file-size sanity, naming).
    - `compliant: false` → each string in `errors` is a precise violation; map it to a finding. A validation exception is a `major` or `blocker` (blocker if a required group/field is absent or a shape is incompatible).
    - Heed any zea **warnings** the script echoes (e.g., "Custom spatial map key(s) added" — a non-standard map key validated as a generic `Map`): record as `minor`/`info` and suggest the supported key.

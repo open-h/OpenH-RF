@@ -22,7 +22,7 @@ Order this check after dimensions 1 and 3. If the file is malformed (dim 1 block
 
 ## Checks
 
-1. **`reconstruct.py` and `pipeline.yaml` exist.** The submission must include a runnable `reconstruct.py` plus a saved `pipeline.yaml` — **one `pipeline.yaml` per track** in the file(s). If either is missing entirely, this dimension is `blocked` — flag for the orchestrator to auto-generate from `scripts/pipeline_template.py`. A multi-track file that is missing one or more of its per-track `pipeline.yaml` files is a `major` finding.
+1. **`reconstruct.py` and `pipeline.yaml` exist.** The submission must include a runnable `reconstruct.py` plus a saved `pipeline.yaml` — **one `pipeline.yaml` per track** in the file(s). If either is missing entirely, this dimension is `blocked` — flag for the orchestrator to auto-generate from `../../../openh-rf-shared/pipeline_template.py`. A multi-track file that is missing one or more of its per-track `pipeline.yaml` files is a `major` finding.
 2. **Pipeline runs without modification.** Execute as the contributor specified. No silent edits to make it work. Crashes → `blocker`, capture the traceback as evidence.
 3. **Pipeline produces a B-mode image.** Output is a 2D array, finite values, dynamic range consistent with log-compressed B-mode (typically -60 to 0 dB or normalized [0, 1]).
 4. **Run `scripts/judge_bmode.py` for objective sanity gates** — a cheap, deterministic pre-check that the pipeline produced a real image, not noise/constant/NaNs: 2D, finite, has spatial variance, dynamic range plausible for a log-compressed B-mode. If any gate fails, the reconstruction is broken regardless of how it looks — record and stop. These gates do **not** assess quality or similarity.

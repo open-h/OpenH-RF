@@ -1,6 +1,6 @@
 # openh-rf-submission-eval
 
-A Claude skill for evaluating submissions to the [OpenH-RF](https://github.com/open-h/OpenH-RF) open ultrasound channel-data initiative against the RFP and submission guide.
+An agentic skill for evaluating submissions to the [OpenH-RF](https://github.com/open-h/OpenH-RF) open ultrasound channel-data initiative against the RFP and submission guide.
 
 ## What it does
 
@@ -25,8 +25,6 @@ openh-rf-submission-eval/
 ├── SKILL.md                  # Orchestration: workflow, verdict logic, auto-fix rules
 ├── references/
 │   ├── rfp-summary.md        # OpenH-RF RFP scope and tiers
-│   ├── data-card-template.md # Canonical data card template
-│   ├── zea-format-notes.md   # zea file format reference
 │   ├── phi-checklist.md      # HHS Safe Harbor 18 identifiers
 │   ├── imaging-artifacts.md  # Acquisition-induced vs pipeline-induced artifact taxonomy
 │   └── dimensions/
@@ -38,13 +36,23 @@ openh-rf-submission-eval/
 │       ├── 06-licensing.md
 │       └── 07-ethics.md
 └── scripts/
-    ├── pipeline_template.py  # Default DAS->envelope->log B-mode pipeline (auto-fix)
     └── judge_bmode.py        # Objective sanity checks on a reconstructed image
+
+# Shared support files (sibling, read by this skill and openh-rf-convert):
+../openh-rf-shared/
+├── validate_zea_spec.py      # Authoritative programmatic zea-format compliance check
+├── pipeline_template.py      # Default DAS->envelope->log B-mode pipeline (auto-fix)
+└── data-card-template.md     # Canonical data card template
 ```
+
+The target zea format is documented inside zea itself —
+`zea.data.spec.{DataSpec, ScanSpec, ProbeSpec, MetadataSpec}` and
+<https://zea.readthedocs.io/en/openh-rf-latest/>. This skill does not
+maintain a parallel copy.
 
 ## How to install
 
-### As a Claude Code skill
+### In Claude Code
 
 The skill lives at `skills/openh-rf-submission-eval/` in the OpenH-RF repo, with
 a committed `.claude/skills/openh-rf-submission-eval` symlink pointing at it.
@@ -89,7 +97,7 @@ The skill produces `evaluation_report.md` plus, if applicable, an `autofix/` dir
 
 ## What gets auto-fixed
 
-- Missing B-mode pipeline (generated from `scripts/pipeline_template.py` if metadata is sufficient)
+- Missing B-mode pipeline (generated from `../openh-rf-shared/pipeline_template.py` if metadata is sufficient)
 - Derivable data-card fields (sample count, total size, per-sample feature table)
 - Missing reference B-mode images (rendered once the pipeline works)
 

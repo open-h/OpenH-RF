@@ -12,13 +12,13 @@ Every hyperparameter a downstream user would need to reconstruct an image from r
 
 - The `.hdf5` file(s) (inspect groups/attributes)
 - The data card (for any metadata documented externally)
-- `references/zea-format-notes.md` for the canonical metadata list
+- `zea.data.spec.{ScanSpec, ProbeSpec, MetadataSpec}` and <https://zea.readthedocs.io/en/openh-rf-latest/> for the canonical field list
 
 **This is the dimension most likely to surface "I think I have everything" submissions that secretly don't.** Be thorough.
 
 ## Required metadata, by category
 
-Field names below are the zea spec fields (see `references/zea-format-notes.md`);
+Field names below are the zea spec fields (see `zea.data.spec.{ScanSpec, ProbeSpec, MetadataSpec}`);
 `probe.*` and `metadata.*` fields are optional in the generic spec but become
 *required for reconstruction* in practice.
 
