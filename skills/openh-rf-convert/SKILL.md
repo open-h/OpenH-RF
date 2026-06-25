@@ -30,7 +30,7 @@ units. Record every unit conversion. Do **not** write the data card.
 
 ## Hard requirements
 
-- **Check the environment first.** Confirm zea is installed and at **≥ v0.1.0**: `python -c "import zea; print(zea.__version__)"`. Older alphas have API drift that will surface as cryptic errors later. OpenH-RF's submission floor is v0.1.0a3, but the convert skill targets current zea — install latest if missing or outdated.
+- **Check the environment first.** Confirm zea is installed: `python -c "import zea; print(zea.__version__)"`. The OpenH-RF acceptance floor is **v0.1.0a3** (this skill works against it), but **v0.1.0 is preferred** — older alphas have API drift that surfaces as cryptic errors later. Install latest if missing or below the floor.
 - **OpenH-RF submissions require `/data/raw_data`** (pre-beamformed channel data). The convert skill itself can run on any source, but if the source only has beamformed/scan-converted pixels, the resulting zea file **won't pass `openh-rf-submission-eval`** as a valid submission. Surface this to the contributor early and ask whether a raw export exists before generating code.
 
 ## Workflow
