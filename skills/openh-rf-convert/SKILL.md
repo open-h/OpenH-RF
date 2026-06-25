@@ -61,6 +61,4 @@ For Verasonics: time-in-wavelengths → s via `× (1/fc)`; distance-in-wavelengt
 
 ## Custom data (escape hatch)
 
-`MetadataSpec` is a closed schema. For anything that doesn't fit the spec,
-zea provides custom fields via `File.create(custom=[CustomElement(...)])`.
-Full reference: <https://zea.readthedocs.io/en/openh-rf-latest/data-acquisition.html#custom-fields>.
+<https://zea.readthedocs.io/en/openh-rf-latest/data-acquisition.html#custom-fields>
