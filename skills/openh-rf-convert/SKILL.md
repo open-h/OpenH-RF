@@ -30,7 +30,7 @@ units. Record every unit conversion. Do **not** write the data card.
 
 ## Hard requirements
 
-- **zea ≥ v0.1.0a3** (OpenH-RF's acceptance floor). `File.create` stamps the version; the verify gate enforces it.
+- **Check the environment first.** Confirm zea is installed and at **≥ v0.1.0**: `python -c "import zea; print(zea.__version__)"`. Older alphas have API drift that will surface as cryptic errors later. OpenH-RF's submission floor is v0.1.0a3, but the convert skill targets current zea — install latest if missing or outdated.
 - **OpenH-RF submissions require `/data/raw_data`** (pre-beamformed channel data). The convert skill itself can run on any source, but if the source only has beamformed/scan-converted pixels, the resulting zea file **won't pass `openh-rf-submission-eval`** as a valid submission. Surface this to the contributor early and ask whether a raw export exists before generating code.
 
 ## Workflow
@@ -61,16 +61,6 @@ For Verasonics: time-in-wavelengths → s via `× (1/fc)`; distance-in-wavelengt
 
 ## Custom data (escape hatch)
 
-`MetadataSpec` is a **closed schema** — only `{subject, credit, probe_pose, voice_narration, ecg, text_report, annotations}`. `annotations` is itself closed: `{anatomy, view, label, image_quality}`. zea raises on unknown keys.
-
-For anything that doesn't fit, use `File.create(custom=...)`:
-
-```python
-from zea.data.file import CustomElement
-File.create(..., custom=[
-    CustomElement(name="lens_profile", data=arr, description="...",
-                  unit="m", group_name=""),
-])
-```
-
-Stored at `/custom/`, retrieved via `File.custom`.
+`MetadataSpec` is a closed schema. For anything that doesn't fit the spec,
+zea provides custom fields via `File.create(custom=[CustomElement(...)])`.
+Full reference: <https://zea.readthedocs.io/en/openh-rf-latest/data-acquisition.html#custom-fields>.

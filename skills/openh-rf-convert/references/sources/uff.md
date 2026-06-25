@@ -101,14 +101,16 @@ axially. Verified against USTB MATLAB ground truth.
 **Tip 5 — `demodulation_frequency = 0` for RF sources.** zea requires
 positive; substitute `center_frequency`.
 
-**Tip 6 — IQ reconstruction needs a custom pipeline.** `Pipeline.from_default()`
-crashes on `n_ch=2` because its `Demodulate` op isn't a no-op for IQ inputs:
+**Tip 6 — IQ reconstruction: pass `baseband=True`.** zea's default pipeline
+includes `Demodulate` which expects RF input; for IQ data, use the built-in
+flag:
 
 ```python
-default = zea.Pipeline.from_default()
-ops = [op for op in default.operations if op.__class__.__name__ != "Demodulate"]
-pipe = zea.Pipeline(ops)
+pipe = zea.Pipeline.from_default(baseband=True)
 ```
+
+This skips `ApplyWindow + Demodulate` and gives an IQ-correct chain
+(`Cast → Beamform → EnvelopeDetect → Normalize → LogCompress`).
 
 ## Open questions (not yet exercised)
 

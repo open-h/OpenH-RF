@@ -69,6 +69,11 @@ Axes: x = lateral, y = elevation, z = axial.
 
 ## Verasonics `.mat` (consolidated)
 
+zea ships a supported Verasonics converter that handles most of this end-to-end:
+<https://zea.readthedocs.io/en/openh-rf-latest/_autosummary/zea.data.convert.verasonics.html>.
+Use it directly when it fits. The mapping below is for the manual path (or to
+sanity-check the converter's output).
+
 Every `TX/*` and `Receive/*` field in v7.3 `.mat` is a struct-array of HDF5
 object references; the inspector surfaces them as `object_refs` +
 `deref_shape`. Dereference (`f[ref]`) to read.
