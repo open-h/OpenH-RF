@@ -9,15 +9,15 @@ This skill reviews a contributor submission to the OpenH-RF initiative and produ
 
 ## Minimum zea version
 
-Every submission must have been written with **zea v0.1.0a3 or later**. The version is stored as the `zea_version` attribute at the HDF5 file root. Files written with v0.1.0a2 or earlier are not eligible — the format spec changed in ways that make older files incompatible. `validate_zea_spec.py` records the installed zea version in its output; flag any `zea_version` in the file that is below `0.1.0a3` as a `blocker`.
+Every submission must have been written with **zea ≥ v0.1.0a3** — OpenH-RF's acceptance floor. Older alphas (≤ v0.1.0a2) have format drift the current loaders no longer accept; this is an OpenH-RF policy, not a zea spec point. `validate_zea_spec.py` enforces it automatically: it sets `compliant: false` and emits a `blocker` finding when the file's `zea_version` attribute is missing or below the floor, so dimension 1 catches it without a separate manual check.
 
 ## What you're evaluating against
 
 OpenH-RF accepts pre-beamformed ultrasound channel data in the *zea* file format, licensed CC BY 4.0, accompanied by a Hugging Face–style `README.md` (which **is** the data card — Hugging Face renders `README.md` as the dataset landing page; see <https://huggingface.co/docs/hub/datasets-cards>) and a reconstruction pipeline that turns the raw channel data into a B-mode image. **There is exactly one user-facing document: `README.md`. There is no separate `DATA_CARD.md`.** The full requirements live in:
 
 - `references/rfp-summary.md` — RFP scope, tiers, eligibility, timeline
-- `references/data-card-template.md` — exact fields the `README.md` must contain, including the YAML frontmatter HF parses
-- `references/zea-format-notes.md` — what a valid zea file looks like and what fields it must expose
+- `../openh-rf-shared/data-card-template.md` — exact fields the `README.md` must contain, including the YAML frontmatter HF parses
+- **zea's spec classes** — `zea.data.spec.{DataSpec, ScanSpec, ProbeSpec, MetadataSpec}` and <https://zea.readthedocs.io/en/openh-rf-latest/> — what a valid zea file looks like and what fields it must expose (authoritative; no parallel copy maintained here)
 - `references/phi-checklist.md` — canonical HHS Safe Harbor 18 identifiers (used by dimensions 4 and 7)
 - `references/imaging-artifacts.md` — taxonomy of acquisition-induced vs pipeline-induced image artifacts (used by dimension 2)
 
@@ -91,8 +91,8 @@ If you're not in an environment with sub-agents, run them serially in the order 
 
 Several common gaps are fixable without going back to the contributor:
 
-- **Missing B-mode pipeline.** If metadata is sufficient (dimension 3 passed) but `reconstruct.py` / `pipeline.yaml` were not included, generate them. The template is at `scripts/pipeline_template.py` — use `zea.Pipeline.from_default()` as the starting point (standard chain: `Cast -> ApplyWindow -> Demodulate -> Beamform(PatchedGrid(TOFCorrection -> DelayAndSum) -> ReshapeGrid) -> EnvelopeDetect -> Normalize -> LogCompress`). Save the script as `reconstruct.py` and the saved pipeline as `pipeline.yaml` (**one per track**, matching the submission guide), then re-run dimension 2 against it.
-- **Missing or incomplete `README.md` (the data card).** Generate a single `README.md` — never a separate `DATA_CARD.md` — with HF YAML frontmatter (`license`, `pretty_name`, `task_categories`, `tags`) followed by the data-card sections from `references/data-card-template.md`. Auto-populate the derivable fields (number of samples, total size on disk, per-sample feature table, file format, dataset characterization) from the zea file. Flag the rest as `REQUIRES_CONTRIBUTOR` rather than silently filling. If a `DATA_CARD.md` already exists, merge its content into `README.md` and mark the standalone file for removal.
+- **Missing B-mode pipeline.** If metadata is sufficient (dimension 3 passed) but `reconstruct.py` / `pipeline.yaml` were not included, generate them. The template is at `../openh-rf-shared/pipeline_template.py` — use `zea.Pipeline.from_default()` as the starting point (standard chain: `Cast -> ApplyWindow -> Demodulate -> Beamform(PatchedGrid(TOFCorrection -> DelayAndSum) -> ReshapeGrid) -> EnvelopeDetect -> Normalize -> LogCompress`). Save the script as `reconstruct.py` and the saved pipeline as `pipeline.yaml` (**one per track**, matching the submission guide), then re-run dimension 2 against it.
+- **Missing or incomplete `README.md` (the data card).** Generate a single `README.md` — never a separate `DATA_CARD.md` — with HF YAML frontmatter (`license`, `pretty_name`, `task_categories`, `tags`) followed by the data-card sections from `../openh-rf-shared/data-card-template.md`. Auto-populate the derivable fields (number of samples, total size on disk, per-sample feature table, file format, dataset characterization) from the zea file. Flag the rest as `REQUIRES_CONTRIBUTOR` rather than silently filling. If a `DATA_CARD.md` already exists, merge its content into `README.md` and mark the standalone file for removal.
 - **Missing reference B-mode images.** Once you have a working pipeline, render 1–2 representative frames and add them to the submission. Link them from the `Data Validation` section of the `README.md`.
 
 Never auto-fix: license declarations, consent/IRB status, subject metadata, intended-usage descriptions, known-issues. These require the contributor.

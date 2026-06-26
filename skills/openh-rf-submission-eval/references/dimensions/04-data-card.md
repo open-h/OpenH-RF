@@ -13,7 +13,7 @@ The data card **is** the `README.md`. Hugging Face renders `README.md` as the da
 ## Artifacts you need
 
 - `README.md` at the dataset root (or a `DATA_CARD.md` fallback, flagged for rename)
-- `references/data-card-template.md` for the canonical section list and YAML frontmatter spec
+- `../../../openh-rf-shared/data-card-template.md` for the canonical section list and YAML frontmatter spec
 - `references/phi-checklist.md` for the PHI scan
 - The **added-beyond-proposal list** from the orchestrator's Step 1b alignment check (anything in the submission the proposal didn't promise), so you can verify each addition is documented here
 

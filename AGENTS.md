@@ -22,6 +22,13 @@ Available skills:
 | Skill | Purpose |
 |---|---|
 | [`skills/openh-rf-submission-eval/`](./skills/openh-rf-submission-eval/) | Evaluate a contributor submission to the OpenH-RF initiative against the RFP and submission guide. Produces a structured acceptance report. |
+| [`skills/openh-rf-convert/`](./skills/openh-rf-convert/) | Source-agnostic dataset conversion adapter — turn an arbitrary source ultrasound dataset into the OpenH-RF (zea) file format, with a confirmed source→zea field mapping and a verified conversion. |
+
+[`skills/openh-rf-shared/`](./skills/openh-rf-shared/) is a shared,
+non-invocable support directory (no `SKILL.md`, so no discovery symlink) holding
+files read by both skills above — the zea-format notes, the data-card template,
+the B-mode pipeline template, and the authoritative `validate_zea_spec.py`
+checker. Skills reference it by relative path (`../openh-rf-shared/…`).
 
 ### Invocation per tool
 
