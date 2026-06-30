@@ -10,7 +10,7 @@ VerasonicsFile reads all scan parameters directly from the .mat file.
     Older .mat files are not HDF5-compatible and cannot be read by this converter.
     To save in the correct format from MATLAB, use the '-v7.3' flag::
 
-        save('C:/path/to/raw_data.mat', '-v7.3')
+        save("C:/path/to/raw_data.mat", "-v7.3")
 
 Requires:
     pip install huggingface_hub
@@ -23,6 +23,7 @@ Usage:
 import argparse
 from pathlib import Path
 
+import zea
 from huggingface_hub import hf_hub_download
 from zea import File, log
 from zea.data.convert.verasonics import VerasonicsFile
@@ -35,7 +36,21 @@ DEFAULT_OUTPUT = Path(__file__).parent / "verasonics_sample.hdf5"
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--device",
+        type=str,
+        default=None,
+        help="CUDA device ID (e.g. 'cuda:0', 'auto:1', or 'cpu')",
+    )
+    parser.add_argument(
+        "--lens-sound-speed",
+        type=float,
+        default=1000.0,
+        help="Speed of sound in the lens material in m/s (default: 1000.0).",
+    )
     args = parser.parse_args()
+
+    zea.init_device(device=args.device, verbose=False)
 
     # Download the .mat file from Hugging Face (cached after first run)
     log.info(f"Downloading {HF_FILENAME} from {HF_REPO}...")
@@ -43,14 +58,12 @@ def main():
         repo_id=HF_REPO, filename=HF_FILENAME, repo_type="dataset", revision="v0.1.0"
     )
 
-    # Create a verasonics .mat file by saving your verasonics workspace in matlab.
     with VerasonicsFile(mat_path, "r") as vf:
         log.info("Reading Verasonics file...")
-        data_dict, scan_dict, custom_elements = vf.read_verasonics_file(
+        data_dict, scan_dict, probe_dict, custom_elements = vf.read_verasonics_file(
             allow_accumulate=True,
+            lens_sound_speed=args.lens_sound_speed,
         )
-        # extract probe parameters from the verasonics .mat file
-        probe_dict = vf.probe.to_probe_spec()
 
         # Generate the zea dataset
         log.info("Generating zea dataset...")
@@ -59,7 +72,7 @@ def main():
             data=data_dict,
             scan=scan_dict,
             probe=probe_dict,
-            description=("Verasonics Vantage 256 - CIRS phantom plane-wave acquisition."),
+            description="Verasonics Vantage 256 - CIRS phantom plane-wave acquisition.",
             overwrite=True,
             metadata={
                 "subject": {
@@ -68,7 +81,6 @@ def main():
                 },
                 "credit": "Whoever collected this dataset",
             },
-            # this includes for example the lens correction parameter
             custom=custom_elements,  # note requires zea v0.1.0a5 or later
         )
 

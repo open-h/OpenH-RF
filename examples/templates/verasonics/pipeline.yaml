@@ -8,10 +8,9 @@ parameters:
   grid_size_z: 600
   dynamic_range: [-40, 0]
   zlims: [0.0065, 0.058]
-  # Lens correction is applied manually in reconstruct.py using the Verasonics
-  # scalar one-way delay stored in the file's custom elements (see CustomElement
-  # "lens_correction"). zea's Fermat-based correction is therefore disabled here.
-  apply_lens_correction: false
+  apply_lens_correction: true
+  # lens_thickness and lens_sound_speed are read from the probe spec in the file.
+  # convert.py derives them from the Verasonics lens_correction custom element.
 
 pipeline:
   operations:

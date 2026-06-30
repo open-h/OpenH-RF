@@ -31,7 +31,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--device",
+        type=str,
+        default=None,
+        help="CUDA device ID (e.g. 'cuda:0', 'auto:1', or 'cpu')",
+    )
     args = parser.parse_args()
+
+    zea.init_device(device=args.device, verbose=False)
 
     if not args.input.exists():
         raise FileNotFoundError(f"{args.input} not found. Run convert.py first.")
@@ -43,20 +51,6 @@ def main():
     with File(str(args.input)) as f:
         parameters = f.load_parameters(**config.parameters)
         raw = f.data.raw_data[:]  # (n_frames, n_tx, n_ax, n_el, 1) — RF
-        # Verasonics scalar lens correction: one-way delay offset in wavelengths,
-        # applied uniformly across all elements (no per-element refraction model).
-        custom = {ce.name: ce.data for ce in f.custom}
-        lens_correction_wl = custom.get("lens_correction")
-
-    print(f"raw_data shape   : {raw.shape}")
-    print(f"grid             : {parameters.grid.shape}  (z, x, 3)")
-    if lens_correction_wl is not None:
-        print(f"lens correction  : {lens_correction_wl:.3f} wavelengths (one-way)")
-
-    # Shift initial_times to account for the round-trip lens delay.
-    if lens_correction_wl is not None:
-        round_trip_delay = 2.0 * lens_correction_wl / parameters.center_frequency
-        parameters.initial_times = parameters.initial_times - round_trip_delay
 
     # Build and run the beamforming pipeline defined in pipeline.yaml
     pipeline = Pipeline.from_config(config)

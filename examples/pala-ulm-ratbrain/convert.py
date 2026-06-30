@@ -20,6 +20,7 @@ os.environ.setdefault("KERAS_BACKEND", "jax")
 import h5py
 import numpy as np
 import requests
+import zea
 from tqdm import tqdm
 from zea import File
 
@@ -50,7 +51,7 @@ def convert(path: Path, output_path: Path) -> Path:
         sampling_frequency = _scalar(rf.attrs["decim_sample_rate_MHz"]) * 1e6 / 4
 
         raw_data = rf[:].transpose(3, 2, 1, 0)[..., None].astype(np.float32)
-        raw_data = _bs100bw_to_iq(raw_data)
+        raw_data = zea.data.convert.verasonics.bs100bw_to_iq(raw_data)
         n_frames, n_tx, n_ax, n_el, n_ch = raw_data.shape  # noqa: F841
 
         waveforms_two_way = _waveform_samples(file["rf"]["pulse"]["Wvfm2Wy"], n_tx)
@@ -178,21 +179,6 @@ def _scalar(arr) -> float:
     while arr.ndim > 0:
         arr = arr[0]
     return float(arr)
-
-
-def _bs100bw_to_iq(data: np.ndarray) -> np.ndarray:
-    """Convert BS100BW data to IQ format ``(n_frames, n_tx, n_ax, n_el, 2)``.
-
-    The BS100BW Verasonics sampling mode interleaves I and Q samples along the
-    axial axis. Even samples are I; odd samples are Q (negated).
-
-    Args:
-        data: Input array of shape ``(n_frames, n_tx, n_ax_raw, n_el, 1)``.
-
-    Returns:
-        IQ array of shape ``(n_frames, n_tx, n_ax, n_el, 2)``.
-    """
-    return np.stack([data[:, :, ::2, :, 0], -data[:, :, 1::2, :, 0]], axis=-1)
 
 
 def _download_and_unzip() -> None:

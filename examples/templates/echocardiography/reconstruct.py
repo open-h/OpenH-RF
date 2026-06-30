@@ -14,6 +14,8 @@ Usage:
 import os
 
 os.environ["MPLBACKEND"] = "Agg"  # use non-interactive backend for matplotlib
+
+import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -28,6 +30,17 @@ OUTPUT = HERE / "echocardiography_bmode.png"
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--device",
+        type=str,
+        default=None,
+        help="CUDA device ID (e.g. 'cuda:0', 'auto:1', or 'cpu')",
+    )
+    args = parser.parse_args()
+
+    zea.init_device(device=args.device, verbose=False)
+
     if not INPUT.exists():
         raise FileNotFoundError(f"{INPUT} not found. Run convert.py first.")
 
