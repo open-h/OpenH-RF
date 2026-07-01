@@ -22,7 +22,7 @@ Order this check after dimensions 1 and 3. If the file is malformed (dim 1 block
 
 ## Checks
 
-1. **`reconstruct.py` and `pipeline.yaml` exist.** The submission must include a runnable `reconstruct.py` plus a saved `pipeline.yaml` — **one `pipeline.yaml` per track** in the file(s). If either is missing entirely, this dimension is `blocked` — flag for the orchestrator to auto-generate from `../../../openh-rf-shared/pipeline_template.py`. A multi-track file that is missing one or more of its per-track `pipeline.yaml` files is a `major` finding.
+1. **`reconstruct.py` and `pipeline.yaml` exist.** The submission must include a runnable `reconstruct.py` plus a saved `pipeline.yaml` — **one `pipeline.yaml` per track** in the file(s). If either is missing entirely, this dimension is `blocked` — flag for the orchestrator to auto-generate from `../../../openh-rf-shared/pipeline_template.py`. A multi-track file that is missing one or more of its per-track `pipeline.yaml` files is a `major` finding. For a submission with multiple sub-datasets in separate folders, check each folder independently — expect a `reconstruct.py` + `pipeline.yaml` pair per sub-dataset folder (or, if the pipeline is genuinely shared, one pair at the root), not exactly one pair for the whole submission.
 2. **Pipeline runs without modification.** Execute as the contributor specified. No silent edits to make it work. Crashes → `blocker`, capture the traceback as evidence.
 3. **Pipeline produces a B-mode image.** Output is a 2D array, finite values, dynamic range consistent with log-compressed B-mode (typically -60 to 0 dB or normalized [0, 1]).
 4. **Run `scripts/judge_bmode.py` for objective sanity gates** — a cheap, deterministic pre-check that the pipeline produced a real image, not noise/constant/NaNs: 2D, finite, has spatial variance, dynamic range plausible for a log-compressed B-mode. If any gate fails, the reconstruction is broken regardless of how it looks — record and stop. These gates do **not** assess quality or similarity.
@@ -33,6 +33,7 @@ Order this check after dimensions 1 and 3. If the file is malformed (dim 1 block
    - *Acquisition-induced artifacts* (these are *fine* — note as `info` if interesting): real acoustic shadowing, real reverberation behind a strong reflector, real attenuation
    State *what* you see and *where* (e.g., "ring-down banding across the top third"), not just "looks fine".
 6. **Match to reference (perceptual, not SSIM).** If the contributor provided a reference B-mode, view both images side by side and judge whether they depict the **same structures / anatomy / geometry** — accounting for differences in grid resolution, field of view, dynamic range, and colormap, which are expected and not defects. SSIM and other pixel-registered metrics are unreliable here because reconstruction and reference rarely share a physical grid; do not use them as a gate. Flag only a *clear* structural disagreement (different scene, mirrored/rotated geometry, features present in one and absent in the other) as `major` — it usually means the metadata in the file disagrees with what the contributor actually used. When the difference is plausibly just scale/colormap/FOV, it is not a finding.
+7. **`reconstruct.py` stays a thin wrapper.** All reconstruction logic — beamformer choice, grid parameters, pre/post-processing — belongs in `pipeline.yaml`; `reconstruct.py` should do little more than load the pipeline and call `reconstruct` (see the `examples/` directory for the expected shape). A `reconstruct.py` containing custom reconstruction functions or branching on acquisition type/geometry is a sign the pipeline logic hasn't been captured in `pipeline.yaml`. This shows up most often in submissions with multiple sub-datasets sharing one root-level `reconstruct.py` that auto-detects which sub-dataset it's reconstructing — recommend splitting into a dedicated `pipeline.yaml` + `reconstruct.py` per sub-dataset folder instead (a shared root-level pair is fine when the pipeline is genuinely identical across sub-datasets).
 
 ## Standard reconstruction chain
 
@@ -49,7 +50,7 @@ Key points when evaluating contributor pipelines:
 
 The default pipeline is a starting point — submitters are expected to adapt it to their data and use case. Different beamformers, custom grid parameters, additional pre/post-processing steps, or domain-specific operations are all valid. `zea.Pipeline` is flexible enough to express any chain. What matters for this dimension is that the output is a sensible 2D log-compressed image and the pipeline runs without modification on the submission data.
 
-Submitters supply **one `pipeline.yaml` per track** in their file. Most submissions are single-track, so there is typically exactly one.
+Submitters supply **one `pipeline.yaml` per track** in their file. Most submissions are single-track, so there is typically exactly one. Submissions with multiple sub-datasets in separate folders should give each folder its own `pipeline.yaml` + `reconstruct.py` rather than sharing one pair at the root, unless the pipeline is genuinely identical across all sub-datasets.
 
 **Submitted B-mode images must be `.png` files.** Contributors supply a reference `.png` output from `reconstruct.py`. If a contributor has submitted a `.npy` or other binary format as the "reference image", flag it as `minor` — the submission guide requires `.png` for quick visual verification. (If they want to supply raw B-mode array data, the `.hdf5` file's `/data/image` group is the right place.)
 
@@ -57,7 +58,7 @@ Submitters supply **one `pipeline.yaml` per track** in their file. Most submissi
 
 - `blocker`: pipeline crashes, output is not an image, output is all-NaN/zero, NaN holes mid-image, sign-flipped intensities
 - `major`: pipeline-induced artifacts (dominant ringing, wraparound, severe banding), or a clear structural disagreement with the contributor's reference image (different scene/geometry, not merely scale/colormap/FOV)
-- `minor`: image quality issues that don't break interpretability (visible artifacts in corners, slight resolution loss)
+- `minor`: image quality issues that don't break interpretability (visible artifacts in corners, slight resolution loss); `reconstruct.py` carries custom reconstruction logic or acquisition-type branching that belongs in `pipeline.yaml`
 - `info`: acquisition-induced artifacts that are real features of the data; pipeline could be more efficient
 
 ## Output
