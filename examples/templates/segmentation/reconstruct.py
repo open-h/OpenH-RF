@@ -1,8 +1,8 @@
 """Reconstruct: load the segmentation dataset and beamform the raw RF data.
 
-Loads the HDF5 file created by convert.py, reads the acquisition parameters and raw
-channel data, and runs a DAS beamforming pipeline defined in pipeline.yaml.
-The resulting B-mode image is saved as a PNG file.
+Defines a DAS beamforming pipeline in code, saves it (together with some beamforming
+parameters) to pipeline.yaml, then loads that YAML back and runs it on the HDF5 file
+created by convert.py. The resulting B-mode image is saved as a PNG file.
 
 Note: the raw data in this example is synthetic (random noise), so the
 output image will appear as unstructured noise — this is expected.
@@ -22,11 +22,45 @@ import matplotlib.pyplot as plt
 import numpy as np
 import zea
 from zea import Config, File, Pipeline
+from zea.ops import Beamform, EnvelopeDetect, LogCompress, Normalize
 
 HERE = Path(__file__).parent
 INPUT = HERE / "segmentation.hdf5"
 CONFIG = HERE / "pipeline.yaml"
 OUTPUT = HERE / "segmentation_bmode.png"
+
+# Curstom reconstruction parameters. These are passed to load_parameters and
+# override (or fill in) values read from the HDF5 file.
+#
+# The dataset contains plane-wave RF data (n_ch=1) from a linear array.
+PARAMETERS = {
+    "selected_transmits": "all",
+    "n_ch": 1,  # RF data
+    "grid_size_x": 200,  # lateral pixels
+    "grid_size_z": 400,  # axial pixels
+    "xlims": [-0.015, 0.015],  # metres
+    "zlims": [0.001, 0.03],  # metres
+}
+
+
+def build_pipeline() -> Pipeline:
+    """Define the delay-and-sum beamforming pipeline in code."""
+    return Pipeline(
+        operations=[
+            Beamform(beamformer="delay_and_sum", num_patches=100),
+            EnvelopeDetect(),
+            Normalize(),
+            LogCompress(),
+        ],
+        validate=False,
+    )
+
+
+def write_config(pipeline: Pipeline, path: Path) -> None:
+    """Serialize the pipeline and acquisition parameters to a YAML config file."""
+    config = pipeline.to_config()
+    config["parameters"] = PARAMETERS
+    config.to_yaml(str(path))
 
 
 def main():
@@ -44,7 +78,9 @@ def main():
     if not INPUT.exists():
         raise FileNotFoundError(f"{INPUT} not found. Run convert.py first.")
 
-    # Load beamforming config
+    # Define the beamforming pipeline in code, save it (with the acquisition
+    # parameters) to pipeline.yaml, then load that YAML back in.
+    write_config(build_pipeline(), CONFIG)
     config = Config.from_path(str(CONFIG))
 
     # Load file: read acquisition parameters (with config overrides) and raw data
@@ -57,7 +93,7 @@ def main():
     print(f"raw_data shape : {raw.shape}")
     print(f"grid           : {parameters.grid.shape}  (z, x, 3)")
 
-    # Build and run the beamforming pipeline defined in pipeline.yaml
+    # Build and run the beamforming pipeline loaded from pipeline.yaml
     pipeline = Pipeline.from_config(config)
     inputs = pipeline.prepare_parameters(parameters)
     outputs = pipeline(data=raw, **inputs)
