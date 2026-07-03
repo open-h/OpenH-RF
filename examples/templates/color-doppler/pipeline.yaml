@@ -1,22 +1,21 @@
-# Beamforming config for the color-doppler example.
-#
-# The dataset contains plane-wave RF data (n_ch=1) from a linear array.
-# This config beamforms the raw channel data to produce a B-mode image.
-
-parameters:
-  selected_transmits: all
-  n_ch: 1               # RF data
-  grid_size_x: 200      # lateral pixels
-  grid_size_z: 400      # axial pixels
-  xlims: [-0.015, 0.015] # metres
-  zlims: [0.001, 0.03]   # metres
-
 pipeline:
-  operations:
-    - name: beamform
-      params:
-        beamformer: delay_and_sum
-        num_patches: 100
-    - name: envelope_detect
-    - name: normalize
-    - name: log_compress
+    operations:
+    - beamform
+    - envelope_detect
+    -   name: normalize
+        params:
+            output_range:
+            - 0.0
+            - 1.0
+    - log_compress
+parameters:
+    selected_transmits: all
+    n_ch: 1
+    grid_size_x: 200
+    grid_size_z: 400
+    xlims:
+    - -0.015
+    - 0.015
+    zlims:
+    - 0.001
+    - 0.03
