@@ -61,6 +61,8 @@ The OpenH-RF format is implemented using the [`zea`](https://github.com/tue-bmd/
 | [`examples/reconstruct_example.py`](examples/reconstruct_example.py) | Reconstructing a B-mode image from raw RF channel data using the default `zea` pipeline |
 | [`examples/save_pipeline_example.py`](examples/save_pipeline_example.py) | Saving a `zea` processing pipeline as a reusable YAML config |
 
+For a submission usually one `pipeline.yaml` + `reconstruct.py` pair suffices. If your submission bundles multiple sub-datasets (distinct acquisition types or geometries) as separate folders under one submission root, please give each sub-dataset folder its own `pipeline.yaml` + `reconstruct.py` rather than sharing one pair at the root instead of growing branching logic to auto-detect which sub-dataset it's running on. A shared root-level pair is still perfectly fine when the pipeline is identical across all sub-datasets.
+
 ## Setup
 
 This repo uses [`uv`](https://docs.astral.sh/uv/) for environment + dependency management. Install it once: `curl -LsSf https://astral.sh/uv/install.sh | sh`.
