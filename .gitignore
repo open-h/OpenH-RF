@@ -12,3 +12,12 @@ __pycache__/
 # Generated example artifacts (written by the example scripts at run time)
 examples/tracked-cirs-phantom/data/
 examples/tracked-cirs-phantom/3d_views/
+
+# Google Drive OAuth secrets/token for scripts/download_submission.py
+scripts/credentials.json
+scripts/.gdrive_token.json
+submissions/*
+!submissions/USTB/
+!submissions/USTB/**
+submissions/USTB/**/*.hdf5
+# submissions/USTB/**/*.png

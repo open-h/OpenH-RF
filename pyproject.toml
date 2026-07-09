@@ -23,6 +23,7 @@ gpu = ["jax[cuda12]"]
 torch = ["torch"]
 tf = ["tensorflow"]
 tf-gpu = ["tensorflow[and-cuda]"]
+gdrive = ["google-api-python-client", "google-auth-oauthlib", "google-auth-httplib2"]
 
 [project.urls]
 Homepage = "https://github.com/open-h/OpenH-RF"
