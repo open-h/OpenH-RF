@@ -214,8 +214,12 @@ def download_folder(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--team", help="Team/submission folder name (skips the interactive prompt).")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--team", help="Team/submission folder name (skips the interactive prompt)."
+    )
     parser.add_argument(
         "--overwrite",
         action="store_true",
