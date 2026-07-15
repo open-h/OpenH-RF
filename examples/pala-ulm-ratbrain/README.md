@@ -34,7 +34,7 @@ Source data deposited on [Zenodo (2023)](https://doi.org/10.5281/zenodo.7883226)
 
 ## License / Terms of Use
 
-CC BY 4.0 (see `LICENCE`). Attribution required — cite Heiles et al., *Nature Biomedical Engineering*, 2022 ([doi.org/10.1038/s41551-021-00824-8](https://doi.org/10.1038/s41551-021-00824-8)).
+CC BY 4.0 (see `LICENSE`). Attribution required — cite Heiles et al., *Nature Biomedical Engineering*, 2022 ([doi.org/10.1038/s41551-021-00824-8](https://doi.org/10.1038/s41551-021-00824-8)).
 
 ## Intended Usage
 

@@ -10,13 +10,13 @@ The submission is cleared for CC BY 4.0 release with no third-party IP encumbran
 
 ## Artifacts you need
 
-- A **`LICENCE`/`LICENSE` file (either spelling, any extension) at the submission root** — required. The submission guide uses the spelling `LICENCE`.
+- A **`LICENSE`/`LICENCE` file (either spelling, any extension) at the submission root** — required. The submission guide uses the spelling `LICENSE`.
 - The data card (License / Terms of Use section)
 - The proposal acceptance record, if available, where the contributor committed to CC BY 4.0
 
 ## Checks
 
-1. **LICENCE file present at submission root.** A `LICENCE`/`LICENSE` file (either spelling, extension optional) must exist at the top level of the submission and contain the verbatim CC BY 4.0 legal code (or an unambiguous SPDX header `SPDX-License-Identifier: CC-BY-4.0` plus a link to the canonical text). A statement of intent in the proposal alone is **not** sufficient — without an in-tree LICENSE the dataset travels without its license and downstream consumers cannot rely on it. Missing LICENSE file is `major` (contributor-fixable; not a blocker because intent has been declared, but cannot accept until the file is in place).
+1. **LICENSE file present at submission root.** A `LICENSE`/`LICENCE` file (either spelling, extension optional) must exist at the top level of the submission and contain the verbatim CC BY 4.0 legal code (or an unambiguous SPDX header `SPDX-License-Identifier: CC-BY-4.0` plus a link to the canonical text). A statement of intent in the proposal alone is **not** sufficient — without an in-tree LICENSE the dataset travels without its license and downstream consumers cannot rely on it. Missing LICENSE file is `major` (contributor-fixable; not a blocker because intent has been declared, but cannot accept until the file is in place).
 2. **Explicit CC BY 4.0 declaration.** The data card must say, plainly, that the dataset is released under CC BY 4.0. Vague phrasing ("open license", "permissive") is `major`. Anything other than CC BY 4.0 (e.g., CC BY-NC, CC BY-SA, custom license) is a `blocker` — the RFP requires CC BY 4.0 for compatibility with the aggregate release.
 3. **No "research-only" or "non-commercial" restrictions.** CC BY 4.0 explicitly permits commercial use. Any restriction language that contradicts this is a `blocker`.
 4. **No bundled third-party data with incompatible licenses.** Scan for: borrowed phantoms or simulation outputs from another dataset, third-party annotations, or any "courtesy of X" attributions that don't include licensing info. If found, `major` — needs clarification.

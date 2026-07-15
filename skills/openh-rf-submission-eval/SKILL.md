@@ -53,11 +53,11 @@ The user will hand you a path (local folder, mounted bucket, HF repo). Before ev
 - `reconstruct.py` — a single runnable script that reconstructs from the raw channel data and outputs a `.png`
 - `pipeline.yaml` — a saved `zea.Pipeline`, **one per track** in the file(s)
 - `README.md` at the dataset root — this **is** the data card (HF renders it as the dataset landing page). Must have YAML frontmatter with `license`, `pretty_name`, `task_categories`, `tags`.
-- `LICENCE` file declaring **CC BY 4.0** (either spelling — the submission guide uses `LICENCE`)
+- `LICENSE` file declaring **CC BY 4.0** (either spelling accepted; `LICENSE` is the canonical one the submission guide uses)
 - 1–2 reference B-mode images (the `.png`(s) `reconstruct.py` produces)
 - Possibly: consent/IRB documentation
 
-This is exactly the deliverable set the submission guide requires: zea `.hdf5` files, `reconstruct.py`, `pipeline.yaml` (one per track), `README.md`, and `LICENCE`. A separate `DATA_CARD.md` is **not** part of the expected layout — if one exists, treat it as a contributor-side artifact to be merged into `README.md` and flag the duplication.
+This is exactly the deliverable set the submission guide requires: zea `.hdf5` files, `reconstruct.py`, `pipeline.yaml` (one per track), `README.md`, and `LICENSE`. A separate `DATA_CARD.md` is **not** part of the expected layout — if one exists, treat it as a contributor-side artifact to be merged into `README.md` and flag the duplication.
 
 **Multiple sub-datasets.** Some submissions bundle several sub-datasets (distinct acquisition types or geometries) as separate folders under one submission root. The recommended layout gives each sub-dataset folder its own `pipeline.yaml` + `reconstruct.py`, rather than sharing one pair at the root — this keeps each `reconstruct.py` a thin script instead of growing acquisition-detection and branching logic to serve every sub-dataset from one script. A shared root-level pair is still an acceptable choice when the pipeline is genuinely identical across all sub-datasets. Seeing multiple `reconstruct.py`/`pipeline.yaml` pairs across sub-dataset folders is the *expected* layout for this case — do not flag it as duplication the way a stray `DATA_CARD.md` would be.
 
