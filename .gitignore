@@ -8,7 +8,14 @@ __pycache__/
 *.egg-info/
 .DS_Store
 *.zip
+.devcontainer/
+.vscode/
 
 # Generated example artifacts (written by the example scripts at run time)
 examples/tracked-cirs-phantom/data/
 examples/tracked-cirs-phantom/3d_views/
+
+# Google Drive OAuth secrets/token for scripts/download_submission.py
+scripts/credentials.json
+scripts/.gdrive_token.json
+submissions/*
