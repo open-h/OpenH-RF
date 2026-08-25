@@ -21,6 +21,7 @@ import h5py
 import numpy as np
 import requests
 import zea
+import zea.data.convert.verasonics  # noqa: F401  (registers the submodule attribute)
 from tqdm import tqdm
 from zea import File
 
@@ -77,7 +78,7 @@ def convert(path: Path, output_path: Path) -> Path:
         prf_hz = _scalar(rf.attrs["PRF_Hz"])
         if prf_hz >= 32767:
             prf_hz = _scalar(rf.attrs["framerate_Hz"]) * _scalar(rf.attrs["num_angles"])
-        time_to_next_transmit = 1.0 / prf_hz
+        time_to_next_transmit = 1.0 / prf_hz  # scalar seconds; broadcast below
 
         element_width = _scalar(us_probe.attrs["element_width_mm"]) * 1e-3
 
@@ -106,7 +107,9 @@ def convert(path: Path, output_path: Path) -> Path:
         "transmit_origins": np.zeros((n_tx, 3), dtype=np.float32),
         "waveforms_two_way": waveforms_two_way,
         "waveforms_one_way": waveforms_one_way,
-        "time_to_next_transmit": time_to_next_transmit,
+        "time_to_next_transmit": np.full(
+            (n_frames, n_tx), time_to_next_transmit, dtype=np.float32
+        ),
     }
 
     metadata = {
