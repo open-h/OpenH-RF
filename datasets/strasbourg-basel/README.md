@@ -22,7 +22,11 @@ size_categories:
   - n<1K
 ---
 
-# BoneSRF — Robot-Tracked Fractured-Femur Phantom Channel Data
+<p align="center">
+  <img src="assets/bonesrf_logo.png" alt="BoneSRF" width="200">
+</p>
+
+# BoneSRF
 
 **BoneSRF** (Bone Surface Reflection) is an ultrasound channel-data dataset built
 around a simple question: can pre-beamformed RF data recovered from a handheld,
@@ -127,7 +131,7 @@ one frame of one scan:
 
 ```bash
 python reconstruct.py                          # all nine, at their reference frames
-python reconstruct.py phantom1_distal          # one scan, at its reference frame
+python reconstruct.py phantom2_wholebone          # one scan, at its reference frame
 python reconstruct.py phantom1_distal --frame 40 --device cpu
 ```
 

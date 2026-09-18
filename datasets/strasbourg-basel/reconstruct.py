@@ -80,10 +80,9 @@ def reconstruct(source: str, scan: str, frame: int, config: Config) -> None:
     plt.figure()
     # extent_imshow is in meters; convert to mm to match the axis labels below.
     plt.imshow(image, extent=np.array(parameters.extent_imshow) * 1e3, cmap="gray")
-    plt.xlabel("X (mm)")
-    plt.ylabel("Z (mm)")
+    plt.axis("off")
     out = OUTPUT_DIR / f"{scan}.png"
-    plt.savefig(str(out), bbox_inches="tight", dpi=100)
+    plt.savefig(str(out), bbox_inches="tight", pad_inches=0, dpi=100)
     plt.close()
     print(f"  saved {out.relative_to(HERE)}")
 
