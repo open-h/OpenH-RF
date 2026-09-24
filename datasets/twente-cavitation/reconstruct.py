@@ -7,10 +7,11 @@ Passive acoustic map (PAM) reconstruction of one cavitation acquisition.
 
 This is a *passive* acquisition: the L11-4v never transmits (the file records
 ``tx_apodizations`` as all zeros); a separate 2.25 MHz single-element transducer
-insonifies the tube with 444 us pulses and the array only receives. A standard
-pulse-echo reconstruction fails twice over -- the all-zero ``tx_apodizations``
-make the transmit-delay model return inf, and the pulse-echo delays sample each
-pixel before the cavitation signal has reached the array.
+insonifies with long pulses and the array only receives. A standard
+pulse-echo reconstruction fails twice over because there is no transmit signal 
+-- the all-zero ``tx_apodizations`` make the transmit-delay model return inf, 
+and the pulse-echo delays sample each pixel before the cavitation signal has 
+reached the array.
 
 Both are fixed with two parameter overrides, with no custom operations needed:
 ``tx_apodizations`` -> ones restores a valid delay computation, and
@@ -51,19 +52,13 @@ from zea.ops import (
     Normalize,
 )
 
-HERE = Path(__file__).parent
-DEFAULT_INPUT = (
-    "hf://nvidia/OpenH-RF/twente-cavitation/data/cavitation_bubbles_10kPa_01mL_per_min.hdf5"
-)
-CONFIG = HERE / "pipeline.yaml"
-
 
 # Grid at half-wavelength sampling over the full aperture.
 PARAMETERS = {
-    "grid_size_x": 387,
-    "grid_size_z": 577,
-    "xlims": [-0.019, 0.019],
-    "zlims": [0.002, 0.060],
+    "grid_size_x": 200,#50, use the commented grid_size values for reasonable results when on a CPU to speed up the reconstruction
+    "grid_size_z": 300,#75,
+    "xlims": [-0.010, 0.010],
+    "zlims": [0.010, 0.040],
     "apply_lens_correction": True,
 }
 
@@ -75,13 +70,16 @@ SAMPLING_INSTANTS = np.linspace(100e-6, 400e-6, 6)
 # Contributor-suggested minimum variance (PR #490), else delay-and-sum.
 BEAMFORMER = "minimum_variance"
 BEAMFORMER_KWARGS = {"subarray_size": 32, "diagonal_loading": 1e-2}
+FRAMES = 10  # Number of frames to average
+
+HERE = Path(__file__).parent
 
 # --- Inputs -----------------------------------------------------------------
 # Defaults stream straight from the published corpus. Swap any of these for a
 # local path to run against your own copy.
-INPUT = "hf://nvidia/OpenH-RF/twente-cavitation/data/cavitation_bubbles_10kPa_01mL_per_min.hdf5"
+INPUT = "hf://nvidia/OpenH-RF/twente-cavitation/data/cavitation_bubbles_1000kPa_01mL_per_min.hdf5"
 OUTPUT = None  # Output PNG path (default: input file name with a .png extension)
-FRAMES = 20  # Number of frames to average
+CONFIG = HERE / "pipeline.yaml"
 DEVICE = "auto:1"  # Device to use (e.g. 'cpu', 'cuda:0', or 'auto:1')
 
 
@@ -140,7 +138,7 @@ def main():
     zea.visualize.set_mpl_style()
     extent_mm = [v * 1e3 for v in parameters.extent_imshow]
     fig, ax = plt.subplots(figsize=(6, 8))
-    im = ax.imshow(np.clip(pam_db, -25, 0), extent=extent_mm, cmap="inferno")
+    im = ax.imshow(np.clip(pam_db, -20, 0), extent=extent_mm, cmap="inferno")
     ax.set_xlabel("X (mm)")
     ax.set_ylabel("Z (mm)")
     cax = make_axes_locatable(ax).append_axes("right", size="5%", pad=0.05)
@@ -149,7 +147,6 @@ def main():
     plt.close()
 
     print(f"Saved          : {OUTPUT}")
-
 
 if __name__ == "__main__":
     main()

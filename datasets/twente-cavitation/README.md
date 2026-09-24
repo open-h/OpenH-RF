@@ -14,9 +14,12 @@ size_categories:
   - 1K<n<10K                 
 ---
 
+![A nice reconstruction based on this dataset.](hero.png?raw=true)
 
 ## Dataset Description
-The collected data is for cavitation mapping of microbubbles, insonified with focused ultrasound at various pressures and flowrates. This data applicable to therapeutic ultrasound and local drug delivery in any part of the human body. The used sensor hardware is a Verasonics research system with an L11-4v transducer for recording the bubble response during the treatment. Insonification is done using a single element transducer at 2.25MHz. The insonification is done with a 1000 cycles long pulse at 2.25MHz, where the first and last 2 microseconds are used for ramping up and down the pressure. The pulse repetition frequency used is 20Hz, repeated 400 times.
+The collected data is for cavitation mapping of microbubbles, insonified with focused ultrasound at various pressures and flowrates. This data is applicable to therapeutic ultrasound and local drug delivery in any part of the human body. The used sensor hardware is a Verasonics research system with an L11-4v transducer for recording the bubble response during the treatment. Insonification is done using a single element transducer at 2.25MHz. The insonification is done with a 1000 cycles long pulse at 2.25MHz, where the first and last 2 microseconds are used for ramping up and down the pressure. The pulse repetition frequency used is 20Hz, repeated 400 times. The tube goes through the imaging plane of the L11-4v, and the transmitting single element transducer insonifies the tube from the side at 90 degrees. Both transducers are positioned to have their (elevation) focus aligned with the tube containing the microbubbles.
+
+![A top view schematic of the experimental setup.](Schematic_setup.png?raw=true)
 
 
 ## Dataset Contributor(s)
@@ -104,11 +107,8 @@ Files are named `cavitation_bubbles_<pressure>kPa_<flowrate>mL.hdf5`, where
 Only one phantom was used. This is a phantom made of PVCp with a single flow channel ~200 micrometer diameter. The used scanner is a Verasonics Vantage 256 with a L11-4v transducer.
 
 ## Data Validation
-An reconstruction pipeline can be found in pipeline.yaml. The script reconstruct.py is an example of the reconstruction of the data, using the minimum variance / Capon beamformer. An example reconstruction is saved with this dataset, and named reference_image_1000kPa_2mL_per_min.png, which was generated using the Capon beamforming algorithm using epsilon = 2, on the datafile named cavitation_bubbles_1000kPa_2mL_per_min.hdf5. By default the script saves the map next to the input file with the same name and a `.png` extension (e.g. `my_file.hdf5` → `my_file.png`); pass `--output` to override. Usage:
+An reconstruction pipeline can be found in pipeline.yaml. The script reconstruct.py is an example of the reconstruction of the data, using the minimum variance / Capon beamformer. An example reconstruction is saved with this dataset, and named cavitation_bubbles_1000kPa_01mL_per_min.png, which was generated using the in zea integrated minimum variance beamformer algorithm using epsilon = 1e-2, on the datafile named cavitation_bubbles_1000kPa_01mL_per_min.hdf5. By default the script saves the map next to the input file with the same name and a `.png` extension (e.g. `my_file.hdf5` → `my_file.png`); pass `--output` to override. Usage:
     python reconstruct.py
-    python reconstruct.py --input my_file.hdf5 --device cpu
-    python reconstruct.py --input my_file.hdf5 --output my_map.png --frames 20 --device cuda:0
-
 
 ## Known Issues
 No known issues.
