@@ -4,14 +4,9 @@ pipeline:
     # Coherent overlap averaging can create fractional RF samples; no cast is needed.
     - apply_window
     - demodulate
-    -   name: fir_filter
-        params:
-            axis: -3
-            complex_channels: true
     -   name: beamform
         params:
             enable_pfield: false
-            # Bound work units so the deep C5-2v grid fits on a 24 GB GPU.
     - envelope_detect
     # Use the true maximum; percentile normalization would clip strong reflectors.
     -   name: normalize
@@ -24,3 +19,6 @@ parameters:
     sound_speed: 1540
     # Derive both grid dimensions at three samples per acoustic wavelength.
     pixels_per_wavelength: 3
+    dynamic_range:
+    - -60
+    - 0

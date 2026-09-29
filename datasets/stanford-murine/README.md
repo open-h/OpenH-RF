@@ -23,6 +23,10 @@ size_categories:
 
 # Stanford Murine Liver and Sound-Speed Phantom Ultrasound
 
+![B-mode reconstructions of a rat liver and the ATS 549 phantom](assets/hero.png)
+
+*Frame 0 reconstructed with `reconstruct.py` (L12-3v, 60 dB). Top: the exposed liver of [Rat3](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/stanford-murine/data/RatExperiments/VerasonicsAcq/Rat3/ExposedLiver/DATA_Tracks_20190319_115804.hdf5), `multifocal` track. Bottom: the ATS 549 phantom's [lesions](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/stanford-murine/data/SoSExperiments/august13_2020/L12_3v/ATS_phantom/lesion/DATA_Tracks_20200813_164505.hdf5) and [point targets](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/stanford-murine/data/SoSExperiments/august13_2020/L12_3v/ATS_phantom/point_target/DATA_Tracks_20200813_164745.hdf5), `hadamard` track. The point targets curve into arcs because the phantom is beamformed at 1540 m/s while its own sound speed is lower — the mismatch this dataset is built to estimate and correct.*
+
 ## Dataset Description
 
 This dataset contains pre-beamformed pulse-echo ultrasound channel data from murine livers and sound-speed phantoms. The data were acquired on a Verasonics Vantage 256 using multifocal, Hadamard-encoded, and full synthetic aperture (FSA) transmit sequences. The dataset supports research on beamforming, sound-speed estimation, and aberration correction; it is not intended for clinical diagnosis.
@@ -99,7 +103,19 @@ Each output file bundles three tracks named `multifocal`, `hadamard`, and `synth
 
 ## Processing the Dataset
 
-The acquisitions can be processed with the `reconstruct.py` [script](https://github.com/open-h/OpenH-RF/blob/main/datasets/stanford-murine/reconstruct.py) as provided in the [OpenH-RF GitHub repository](https://github.com/open-h/OpenH-RF), together with the `pipeline_multifocal.yaml`, `pipeline_hadamard.yaml` and `pipeline_synthetic_aperture.yaml` definitions in this folder and the [zea library](https://github.com/tue-bmd/zea). The script streams the data from the Hugging Face Hub; each file bundles the three tracks, and the script reconstructs every track with its own pipeline and writes one image per track to `assets/`.
+The acquisitions can be processed with the `pipeline_multifocal.yaml`, `pipeline_hadamard.yaml` and `pipeline_synthetic_aperture.yaml` definitions in this folder and the [zea library](https://github.com/tue-bmd/zea). Each file bundles three tracks, one per transmit sequence (`multifocal`, `hadamard`, `synthetic_aperture`), and each track has its own pipeline.
+
+`zea` streams the data from the Hugging Face Hub and processes it according to the pipeline; pass the matching track with `--track`. You can try it out with the following command:
+
+```bash
+zea process \
+  --dataset hf://nvidia/OpenH-RF/stanford-murine/data/RatExperiments/VerasonicsAcq/Rat3/ExposedLiver/DATA_Tracks_20190319_115804.hdf5 \
+  --config hf://nvidia/OpenH-RF/stanford-murine/pipeline_synthetic_aperture.yaml \
+  --track synthetic_aperture \
+  --n-frames 1
+```
+
+Alternatively, you can use the `reconstruct.py` [script](https://github.com/open-h/OpenH-RF/blob/main/datasets/stanford-murine/reconstruct.py) as provided in the [OpenH-RF GitHub repository](https://github.com/open-h/OpenH-RF). It reconstructs the first frame of every track in `ZEA_FILE` with the same pipelines and writes one image per track to `assets/`. On top of the YAML, the script inserts a baseband FIR low-pass after demodulation, with its cutoff at half the probe bandwidth (4.0 MHz for L12-3v, 3.0 MHz for L12-5, 1.3 MHz for C5-2v). The cutoff depends on the probe, so it is not part of the pipeline YAMLs and `zea process` runs without it; the difference is small on the rat acquisitions and clearly visible at depth on the phantoms.
 
 ## Dataset Format
 
@@ -176,30 +192,7 @@ The phantom data contain no human subjects. Phantom identifiers describe the pro
 
 ## Data Validation
 
-The reconstruction path uses the first stored frame and a zea `Pipeline`: RF demodulation and baseband FIR filtering, delay-and-sum beamforming, envelope detection, maximum normalization, and log compression. The pipeline YAML files use three pixels per acoustic wavelength and disable pressure-field weighting. Beamforming is split into bounded patches so the deepest C5-2v grid fits on a 24 GB GPU.
-
-From the repository root, generate the demo files and reference images with:
-
-```bash
-python examples/stanford/download.py --demo
-python examples/stanford/convert.py --dataset rat --demo
-python examples/stanford/convert.py --dataset phantom --demo
-
-CUDA_VISIBLE_DEVICES=0 JAX_PLATFORMS=cuda KERAS_BACKEND=jax \
-  python examples/stanford/reconstruct.py --dataset rat --demo --rat-id 9
-CUDA_VISIBLE_DEVICES=0 JAX_PLATFORMS=cuda KERAS_BACKEND=jax \
-  python examples/stanford/reconstruct.py --dataset phantom --demo
-
-python examples/stanford/stitch.py --dataset rat --demo --rat-id 9
-python examples/stanford/stitch.py --dataset phantom --demo
-```
-
-The reconstructed PNGs and demodulated spectra are written under `examples/stanford/outputs`. The stitched review documents are:
-
-- `examples/stanford/outputs/RatExperiments/all_bmode_reconstructions.pdf`
-- `examples/stanford/outputs/SoSExperiments/all_sos_bmode_reconstructions.pdf`
-
-The reconstruction scripts are validated with zea 0.1.4.
+The reference pipelines reconstruct the first stored frame of each track: RF demodulation, delay-and-sum beamforming without pressure-field weighting, envelope detection, maximum normalization and log compression, shown over a 60 dB dynamic range. The grid is derived at three pixels per acoustic wavelength over the acquired aperture and depth. `reconstruct.py` adds the probe-dependent baseband FIR described in [Processing the Dataset](#processing-the-dataset); without it, `zea process` and `reconstruct.py` produce the same image. The figure at the top of this card shows the `multifocal` track of Rat3 and the `hadamard` track of two ATS 549 acquisitions, reconstructed with `reconstruct.py`. `assets/main.png` is the same Rat3 `multifocal` reconstruction on its native grid, without axes.
 
 ## Known Issues
 
@@ -214,48 +207,6 @@ The reconstruction scripts are validated with zea 0.1.4.
 No human data are included. The murine study was approved by Stanford University's Institutional Administrative Panel on Laboratory Animal Care. Animals were scanned under 2% isoflurane anesthesia on a heated platform with continuous temperature monitoring; the associated publication describes the euthanasia and tissue-measurement procedures. The public sources do not state an approval number or explicit ARRIVE 2.0 compliance.
 
 The phantom acquisitions require no human- or animal-subject approval. Both Figshare records confirm that no human personally identifiable information is present.
-
-## Scripts and Paths
-
-- `download.py`: download the raw Figshare demo subset or full records.
-- `download_figshare_full.sh`: resumably mirror both full Figshare records to `/ultra20/figshare` with progress and checksum verification.
-- `convert.py`: convert source MAT files to zea HDF5.
-- `reconstruct.py`: reconstruct HDF5 tracks to B-mode PNGs and spectra.
-- `stitch.py`: combine PNGs into review PDFs.
-- `upload.py`: upload selected HDF5 files, this README, and pipeline YAMLs.
-- `delete_hf.py`: delete existing remote `zea/` files before replacement.
-
-Default paths:
-
-- Raw rat input: `examples/stanford/data/RatExperiments`
-- Raw phantom input: `examples/stanford/data/SoSExperiments`
-- Converted rat output: `examples/stanford/data/RatExperiments_zea`
-- Converted phantom output: `examples/stanford/data/SoSExperiments_zea`
-- Reconstruction output: `examples/stanford/outputs`
-
-For full conversion after downloading both Figshare records:
-
-```bash
-python examples/stanford/download.py --full
-python examples/stanford/convert.py --dataset rat --full
-python examples/stanford/convert.py --dataset phantom --full
-python examples/stanford/reconstruct.py --dataset rat --full
-python examples/stanford/reconstruct.py --dataset phantom --full
-python examples/stanford/stitch.py --dataset rat --full
-python examples/stanford/stitch.py --dataset phantom --full
-```
-
-To resume an interrupted conversion without rewriting completed bundles, add `--skip-existing`. A bundle is skipped only when both its atomic HDF5 output and text summary are present.
-
-To keep a separate, resumable mirror of both complete Figshare records under `/ultra20/figshare`, with per-file and overall progress bars plus size and MD5 verification, run:
-
-```bash
-examples/stanford/download_figshare_full.sh
-```
-
-This writes `RatExperiments_download` and `SoSExperiments_download`. Use `examples/stanford/download_figshare_full.sh --dry-run` to validate and summarize the public records without downloading them.
-
-Use `--min-rat N` or `--rat-id N` with `convert.py` to limit rat conversion. Raw MAT files remain local; `upload.py` selects converted HDF5 files and documentation explicitly.
 
 ## Citation
 

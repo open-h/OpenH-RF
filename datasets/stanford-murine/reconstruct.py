@@ -6,8 +6,12 @@ Dataset link: https://huggingface.co/datasets/nvidia/OpenH-RF/tree/main/stanford
 B-mode reconstruction of murine full synthetic aperture, multifocal and
 Hadamard-encoded channel data.
 
-Acquisition parameters are built from each track's own metadata, and one
-displayed image is saved per track.
+Each file bundles three tracks. Every track is reconstructed with its own
+pipeline_<track>.yaml: the acquisition parameters come from the track's own
+metadata and the YAML adds the reconstruction grid and dynamic range. On top of
+the YAML, a baseband FIR low-pass at half the probe bandwidth is inserted after
+demodulation; its taps depend on the probe, so `zea process --track <track>`
+runs the same pipeline without it. One displayed image is saved per track.
 
 Requires zea>=0.1.6 (https://github.com/tue-bmd/zea), the library that does the
 ultrasound processing here, together with one of its Keras backends (JAX,
@@ -43,52 +47,6 @@ CONFIG_DIR = "hf://nvidia/OpenH-RF/stanford-murine"  # holds the pipeline_*.yaml
 OUT_DIR = HERE / "assets"  # every PNG is written here
 
 
-def metadata_scalar(group, name: str) -> float:
-    """Read one scan scalar as a plain float."""
-    return float(getattr(group, name))
-
-
-def reconstruction_limits(
-    file, track, raw_data, np
-) -> tuple[tuple[float, float], tuple[float, float]]:
-    """Derive the acquired field of view without storing dummy image maps."""
-    sampling_frequency = metadata_scalar(track.scan, "sampling_frequency")
-    sound_speed = metadata_scalar(track.scan, "sound_speed") or 1540.0
-    if sampling_frequency is None or sampling_frequency <= 0:
-        raise ValueError(
-            "A positive sampling_frequency is required to determine reconstruction depth."
-        )
-
-    initial_times = np.asarray(track.scan.initial_times, dtype=np.float64)
-    zmin = max(0.0, float(np.min(initial_times) * sound_speed / 2.0))
-    zmax = float(
-        (np.max(initial_times) + (raw_data.shape[2] - 1) / sampling_frequency) * sound_speed / 2.0
-    )
-
-    geometry = np.asarray(file.probe.probe_geometry)
-    if file.probe.type != "curved":
-        return (
-            (float(np.min(geometry[:, 0])), float(np.max(geometry[:, 0]))),
-            (zmin, zmax),
-        )
-
-    # Curved-array elements lie on a circle whose center is below the array
-    # origin. Recover its radius and opening angle from the saved geometry.
-    x_positions = geometry[:, 0]
-    z_positions = geometry[:, 2]
-    curved_elements = np.abs(z_positions) > np.finfo(geometry.dtype).eps
-    radii = -(x_positions[curved_elements] ** 2 + z_positions[curved_elements] ** 2) / (
-        2.0 * z_positions[curved_elements]
-    )
-    radius = float(np.median(radii))
-    angles = np.arctan2(x_positions, z_positions + radius)
-    x_limit = max(
-        float(np.max(np.abs(x_positions))),
-        float((zmax + radius) * np.sin(np.max(np.abs(angles)))),
-    )
-    return (-x_limit, x_limit), (zmin, zmax)
-
-
 def folded_frequency(frequency: float, sampling_frequency: float) -> float:
     """Fold a frequency into the sampled Nyquist interval."""
     return (frequency + sampling_frequency / 2.0) % sampling_frequency - sampling_frequency / 2.0
@@ -117,7 +75,27 @@ def demodulation_filter(
     return firwin(num_taps, cutoff, fs=sampling_frequency).astype(np.float32), cutoff
 
 
+def with_fir_filter(config):
+    """Insert the baseband FIR after demodulation.
+
+    Its taps depend on each file's probe bandwidth, so they are computed per track
+    below and the step is not part of the pipeline YAMLs; ``zea process`` runs the
+    same pipeline without it.
+    """
+    import zea
+
+    config = zea.Config(config.as_dict())
+    operations = list(config.pipeline.operations)
+    operations.insert(
+        operations.index("demodulate") + 1,
+        {"name": "fir_filter", "params": {"axis": -3, "complex_channels": True}},
+    )
+    config.pipeline.operations = operations
+    return config
+
+
 def reconstruct_track(path: str, output_dir: Path, track_index: int, config, pipeline) -> Path:
+    """Reconstruct the first frame of one track with its YAML pipeline plus the FIR."""
     import matplotlib.pyplot as plt
     import numpy as np
     import zea
@@ -127,49 +105,25 @@ def reconstruct_track(path: str, output_dir: Path, track_index: int, config, pip
     with zea.File(str(path)) as file:
         track = file.tracks[track_index]
         track_label = track.label
-        extent_data = track.data.raw_data[:1]
-        xlims, zlims = reconstruction_limits(file, track, extent_data, np)
-        config_params = config.parameters.as_dict()
-
-        # Older Stanford files sometimes marked real RF as already demodulated.
-        demodulation_frequency = metadata_scalar(track.scan, "demodulation_frequency")
-        center_frequency = metadata_scalar(track.scan, "center_frequency")
-        demodulation_override = {}
-        if center_frequency is not None and (
-            demodulation_frequency is None or abs(demodulation_frequency) < 1.0
-        ):
-            demodulation_override["demodulation_frequency"] = center_frequency
-        parameter_overrides = {
-            **config_params,
-            **demodulation_override,
-            "grid_type": "cartesian",
-        }
-        parameter_overrides.update({"xlims": xlims, "zlims": zlims})
-
-        dynamic_range = (-50, 0) if file.probe_name == "C5-2v" else (-60, 0)
-        parameter_overrides["dynamic_range"] = np.array(dynamic_range, dtype=np.float32)
-        parameters = track.load_parameters(**parameter_overrides)
+        # Acquisition parameters come from the file; the pipeline YAML adds the
+        # reconstruction grid and display settings on top.
+        parameters = track.load_parameters()
+        parameters.update(config.parameters.as_dict())
         data = track.data.raw_data[:1, parameters.selected_transmits]
 
-        filter_taps, _ = demodulation_filter(
-            float(parameters.sampling_frequency),
-            float(parameters.demodulation_frequency),
-            float(parameters.probe_bandwidth_percent),
-            np,
-        )
-        pipeline_parameters = pipeline.prepare_parameters(
-            parameters,
-            fir_filter_taps=filter_taps,
-        )
-
-        outputs = pipeline(return_numpy=True, **{pipeline.key: data}, **pipeline_parameters)
-        image = np.squeeze(outputs[pipeline.output_key])
-        image = np.clip(image, dynamic_range[0], dynamic_range[1])
-        demodulation_frequency = float(
-            parameter_overrides.get("demodulation_frequency")
-            or metadata_scalar(track.scan, "demodulation_frequency")
-            or 0.0
-        )
+    filter_taps, _ = demodulation_filter(
+        float(parameters.sampling_frequency),
+        float(parameters.demodulation_frequency),
+        float(parameters.probe_bandwidth_percent),
+        np,
+    )
+    outputs = pipeline(
+        return_numpy=True,
+        **{pipeline.key: data},
+        **pipeline.prepare_parameters(parameters, fir_filter_taps=filter_taps),
+    )
+    image = np.squeeze(outputs[pipeline.output_key])
+    dynamic_range = tuple(float(v) for v in parameters.dynamic_range)
 
     stem = Path(path).stem
     out_path = output_dir / f"{stem}_{track_label}.png"
@@ -223,7 +177,7 @@ def main() -> None:
     # Build each track pipeline once, then reuse it for every track in the file.
     pipeline_configs = {}
     for track_label, filename in CONFIG_BY_TRACK.items():
-        config = zea.Config.from_path(f"{CONFIG_DIR}/{filename}")
+        config = with_fir_filter(zea.Config.from_path(f"{CONFIG_DIR}/{filename}"))
         pipeline_configs[track_label] = (config, zea.Pipeline.from_config(config))
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
