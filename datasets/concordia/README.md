@@ -21,7 +21,7 @@ size_categories:
 
 ![B-mode reconstructions of the five SynthUS-FSA phantom classes](assets/classes.png)
 
-*The five phantom classes (anechoic, hypoechoic, hyperechoic, diverse, point-target), each reconstructed from `data/raw_data`: [`image_0005`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_0005.hdf5), [`image_0470`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_0470.hdf5), [`image_0640`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_0640.hdf5), [`image_1100`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_1100.hdf5), [`image_1808`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_1808.hdf5).*
+*The five phantom classes (anechoic, hypoechoic, hyperechoic, diverse, point-target), one capture per column: [`image_0012`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_0012.hdf5), [`image_0410`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_0410.hdf5), [`image_0733`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_0733.hdf5), [`image_0753`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_0753.hdf5), [`image_1808`](https://huggingface.co/datasets/nvidia/OpenH-RF/blob/main/concordia/data/image_1808.hdf5). Rows show the reference B-mode (`data/image`), the simulated scatterer cloud (`data/scatterers`) and the label map (`data/segmentation` for the lesion classes, `data/diverse_source_image` for diverse; point-target captures store none).*
 
 ## Dataset Description
 

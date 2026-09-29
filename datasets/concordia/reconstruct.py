@@ -59,7 +59,7 @@ F_NUMBER = 1.75
 # --- Inputs -----------------------------------------------------------------
 # Defaults stream straight from the published corpus. Swap any of these for a
 # local path to run against your own copy.
-ZEA_FILE = "hf://nvidia/OpenH-RF/concordia/data/image_1808.hdf5"
+ZEA_FILE = "hf://nvidia/OpenH-RF/concordia/data/image_0753.hdf5"
 FRAME = 0  # Frame index (default: 0)
 OUT = HERE / "assets" / "reference_capture.png"
 SAVE_YAML = None  # Optionally write the pipeline to a reusable pipeline.yaml
