@@ -36,10 +36,11 @@ from zea.ops import Beamform, Cast, Demodulate, EnvelopeDetect, LogCompress, Nor
 HERE = Path(__file__).resolve().parent
 CONFIG = HERE / "pipeline.yaml"
 
-# Common shallow reference grid used for every acquisition.
+# Common shallow reference grid used for every acquisition, with isotropic
+# ~0.073 mm (~lambda/4) pixels so the image keeps its physical aspect ratio.
 PARAMETERS = {
-    "grid_size_x": 300,
-    "grid_size_z": 597,
+    "grid_size_x": 600,
+    "grid_size_z": 301,
     "xlims": [-0.021965, 0.021965],
     "zlims": [0.0029568189236411113, 0.02498497892364108],
     "dynamic_range": [-60, 0],
@@ -49,7 +50,7 @@ PARAMETERS = {
 # Defaults stream straight from the published corpus. Swap any of these for a
 # local path to run against your own copy.
 ZEA_FILE = "hf://nvidia/OpenH-RF/weillcornell/data/ac10_15m_SK.hdf5"
-OUT = HERE / "assets" / "ac1_15m_SK_pipeline.png"
+OUT = HERE / "assets" / "ac10_15m_SK_pipeline.png"
 HF_CONFIG = "hf://nvidia/OpenH-RF/weillcornell/pipeline.yaml"
 FRAME = 0  # Frame index to reconstruct
 DEVICE = None  # Optional zea device, e.g. cpu, cuda:0, auto:0

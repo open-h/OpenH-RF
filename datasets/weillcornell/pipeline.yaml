@@ -13,8 +13,8 @@ pipeline:
             - 1.0
     - log_compress
 parameters:
-    grid_size_x: 300
-    grid_size_z: 597
+    grid_size_x: 600
+    grid_size_z: 301
     xlims:
     - -0.021965
     - 0.021965
