@@ -101,7 +101,7 @@ hdf5/
 
 **Current OpenH-RF release:** 70 HDF5 files; 802.10 MB (802,095,104 bytes) stored; root `zea_version` **0.1.6**. Sizes include all HDF5 contents and use decimal units (MB = 10^6 bytes, GB = 10^9 bytes, TB = 10^12 bytes), not decoded-array memory or original-source download sizes.
 
-- **Subjects:** 35 (S01–S35, all female; age groups in *Subject Metadata*).
+- **Subjects:** 35 (S01–S37 with S11 and S29 unused, all female; age groups in *Subject Metadata*).
 - **Acquisitions:** 70 (2 repeat acquisitions per subject, named `<patient>_D1` / `<patient>_D2`).
 - **HDF5 files:** 70 (one file per acquisition in `hdf5/original/`).
 - **RF frames:** 70 (one acquired frame per acquisition).
@@ -144,14 +144,13 @@ Per-file metadata follows the **HIPAA Safe-Harbor** approach: only **de-identifi
 | Age group | Count | % |
 |---|---|---|
 | 20-29 | 2  | 5.7% |
-| 30-39 | 4  | 11.4% |
+| 30-39 | 5  | 14.3% |
 | 40-49 | 12 | 34.3% |
 | 50-59 | 8  | 22.9% |
 | 60-69 | 5  | 14.3% |
 | 70-79 | 3  | 8.6% |
-| 80-89 | 1  | 2.9% |
 
-- **Case status:** 22 benign (62.9%) / 13 malignant (37.1%)
+- **Case status:** 23 benign (65.7%) / 12 malignant (34.3%)
 - **BI-RADS distribution:**
 
 | BI-RADS | Count | % |
@@ -159,22 +158,23 @@ Per-file metadata follows the **HIPAA Safe-Harbor** approach: only **de-identifi
 | C2 | 8  | 22.9% |
 | C3 | 5  | 14.3% |
 | C4a | 11 | 31.4% |
-| C4b | 2  | 5.7% |
+| C4b | 1  | 2.9% |
+| C4c | 1  | 2.9% |
 | C5 | 2  | 5.7% |
 | C6 | 7  | 20.0% |
 
-- **Lesion size (longest axis, cm):** n=35, min 0.50, max 5.20, mean 1.40, median 1.00.
+- **Lesion size (longest axis, cm):** n=35, min 0.50, max 5.20, mean 1.36, median 1.00.
 
 | Lesion size | Count |
 |---|---|
-| < 1.0 cm | 14 |
-| 1.0 – 2.0 cm | 13 |
-| 2.0 – 3.0 cm | 5  |
-| ≥ 3.0 cm | 3  |
+| < 1.0 cm | 17 |
+| 1.0 – 2.0 cm | 10 |
+| 2.0 – 3.0 cm | 6  |
+| ≥ 3.0 cm | 2  |
 
 - **Histopathology subtypes:**
-  - *Malignant (n=13):* IDC (8), DCIS (4), ADH (1)
-  - *Benign (n=22):* FA (9), IDP (3), FCC (1), Usual Ductal Hyperplasia (1), unspecified / NA (8)
+  - *Malignant (n=12):* IDC (8), DCIS (4)
+  - *Benign (n=23):* FA (8), IDP (3), FCC (1), Usual Ductal Hyperplasia (1), ADH (1), unspecified / NA (9)
 - **Anatomical region:** Breast (left and right; mixed lesion locations).
 - **Scanner / probe model:** Clinical FDA-cleared scanner with a 192-element linear 10 MHz probe.
 
@@ -205,6 +205,6 @@ Reference output: `main.png` — `data/S01_D1.hdf5` (biopsy-proven invasive duct
 ## Ethical Considerations
 
 - **Consent status:** All subjects gave informed consent under SNUBH IRB protocol **B-2401-876-301**.
-- **De-identification:** No direct identifiers (name, full exam date, free-text clinical notes) are stored. Age is decade-binned at the dataset level (not stored per file); exact lesion size and exam dates are not stored per file; only the acquisition year (2024) is reported. Subject IDs are coded (`S01`…`S35`).
+- **De-identification:** No direct identifiers (name, full exam date, free-text clinical notes) are stored. Age is decade-binned at the dataset level (not stored per file); exact lesion size and exam dates are not stored per file; only the acquisition year (2024) is reported. Subject IDs are coded (`S01`…`S37`; `S11` and `S29` are unused).
 - **IRB approval:** SNUBH IRB **B-2401-876-301**
 - **Animal welfare (ARRIVE 2.0):** Not applicable — human-only dataset.
