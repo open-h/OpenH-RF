@@ -2259,7 +2259,7 @@ requires-dist = [
     { name = "tensorflow", marker = "extra == 'tf'" },
     { name = "tensorflow", extras = ["and-cuda"], marker = "extra == 'tf-gpu'" },
     { name = "torch", marker = "extra == 'torch'" },
-    { name = "zea", specifier = "==0.1.7" },
+    { name = "zea", specifier = "==0.1.8" },
 ]
 provides-extras = ["test", "gpu", "torch", "tf", "tf-gpu"]
 
@@ -3778,7 +3778,7 @@ wheels = [
 
 [[package]]
 name = "zea"
-version = "0.1.7"
+version = "0.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "decorator" },
@@ -3803,9 +3803,9 @@ dependencies = [
     { name = "tyro" },
     { name = "wget" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c3/a9/2b2ebf7cb9bf709aaefb20932f0cc9377c2eb73db834fe591089145b6fd0/zea-0.1.7.tar.gz", hash = "sha256:e61527ce58745ffd8f14f9f231eb45ad1c7e632957036c9dffbeebe6c28cdf40", size = 679800, upload-time = "2026-09-21T14:07:19.561Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/8b/aed23a929fba1f94837b0643686e3d84714e8a07869517df42fbe192893b/zea-0.1.8.tar.gz", hash = "sha256:56e2bb7665a23913615cf4be83d964b48241864c7d2579d014b95273f228f0ad", size = 703797, upload-time = "2026-10-01T18:36:06.864Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e0/10/a8f8cd2b892062d71219d16f145d12f491d22e7a87ece1af3e3c7bef9ade/zea-0.1.7-py3-none-any.whl", hash = "sha256:be6f709363cc3770df1cef2d6967df8b240e999318a10a9c985e058585afc3f7", size = 747591, upload-time = "2026-09-21T14:07:17.806Z" },
+    { url = "https://files.pythonhosted.org/packages/cd/ea/1e1ba072f7947e67abaafe8ed83dbaacc59bd23a476b2855ddd15eeb11ee/zea-0.1.8-py3-none-any.whl", hash = "sha256:86d6cca88521b122077e637eda5e8876b78b1efe5594da95ea6e6887af3df6b6", size = 772702, upload-time = "2026-10-01T18:36:05.194Z" },
 ]
 
 [[package]]
