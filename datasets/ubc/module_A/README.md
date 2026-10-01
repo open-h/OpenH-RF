@@ -90,7 +90,17 @@ Acquisition and simulation details:
 
 ## Processing the Dataset
 
-The acquisitions can be processed with the `reconstruct.py` [script](https://github.com/open-h/OpenH-RF/blob/main/datasets/ubc/module_A/reconstruct.py) as provided in the [OpenH-RF GitHub repository](https://github.com/open-h/OpenH-RF), together with the `pipeline.yaml` definition in this folder and the [zea library](https://github.com/tue-bmd/zea). The script streams the data from the Hugging Face Hub.
+The acquisitions can be processed with the `pipeline.yaml` definition in this folder and the [zea library](https://github.com/tue-bmd/zea).
+
+`zea` streams the data from the Hugging Face Hub and processes it according to the pipeline. You can try it out with the following command:
+
+```bash
+zea process \
+  --dataset hf://nvidia/OpenH-RF/ubc/module_A/acquisitions/case_1.83/ubc_swave_cirs_1.83_p10_f13.hdf5 \
+  --config hf://nvidia/OpenH-RF/ubc/module_A/pipeline.yaml
+```
+
+Alternatively, you can use the `reconstruct.py` [script](https://github.com/open-h/OpenH-RF/blob/main/datasets/ubc/module_A/reconstruct.py) as provided in the [OpenH-RF GitHub repository](https://github.com/open-h/OpenH-RF).
 
 `reconstruct.py` reconstructs one frame (default `case_1.83/ubc_swave_cirs_1.83_p10_f13.hdf5`); [`reconstruct_multiframe.py`](https://github.com/open-h/OpenH-RF/blob/main/datasets/ubc/module_A/reconstruct_multiframe.py) reconstructs the temporal sequence at one motor plane (`CASE_ID`, `PLANE`, `N_FRAMES`) into an animated GIF.
 
