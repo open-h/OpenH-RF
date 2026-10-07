@@ -97,20 +97,30 @@ main:focus { outline: none; }
   border-bottom: 1px solid var(--border);
 }
 .topbar-inner { max-width: 1400px; height: 3.5rem; margin: 0 auto; padding-inline: 1.25rem; display: flex; align-items: center; gap: 1rem; }
-.brand { display: inline-flex; align-items: center; gap: 0.55rem; color: var(--text); font-weight: 800; font-size: 1.08rem; }
+.brand { flex: none; display: inline-flex; align-items: center; gap: 0.55rem; color: var(--text); font-weight: 800; font-size: 1.08rem; }
 .brand:hover { text-decoration: none; }
 .brand-mark { width: auto; height: 30px; border-radius: var(--radius-lg); }
 .topnav { margin-left: auto; display: flex; gap: 0.25rem; }
 .topnav a { color: var(--text-2); font-weight: 600; font-size: 0.92rem; padding: 0.35rem 0.7rem; border-radius: var(--radius); }
 .topnav a:hover { color: var(--text); background: var(--bg-3); text-decoration: none; }
 .topnav a[aria-current] { color: var(--primary); background: var(--primary-soft); }
-.theme-toggle {
-  display: grid; place-items: center; width: 2rem; height: 2rem; padding: 0; cursor: pointer;
-  color: var(--text-2); background: none; border: 0; border-radius: var(--radius);
+.theme-switch { --cell: 1.75rem; position: relative; display: flex; flex: none; padding: 2px; background: var(--bg-3); border: 1px solid var(--border); border-radius: 999px; }
+.theme-switch::before {
+  content: ""; position: absolute; top: 2px; left: 2px; width: var(--cell); height: var(--cell);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 50%; box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+  transition: translate 0.2s;
 }
-.theme-toggle:hover { color: var(--text); background: var(--bg-3); }
-.theme-toggle svg { width: 1.2rem; height: 1.2rem; fill: none; stroke: currentColor; stroke-width: 2; }
-.theme-toggle path { fill: currentColor; }
+.theme-switch:has([value="light"]:checked)::before { translate: 100%; }
+.theme-switch:has([value="dark"]:checked)::before { translate: 200%; }
+.theme-switch label { position: relative; display: grid; place-items: center; width: var(--cell); height: var(--cell); border-radius: 50%; color: var(--text-3); }
+.theme-switch label:hover, .theme-switch label:has(:checked) { color: var(--text); }
+.theme-switch label:has(:focus-visible) { outline: 2px solid var(--primary); outline-offset: 1px; }
+.theme-switch input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.theme-switch svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.theme-switch .fill { fill: currentColor; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch::before { transition: none; }
+}
 
 /* Buttons */
 
@@ -620,6 +630,8 @@ dialog::backdrop { background: rgb(0 0 0 / 0.4); }
   .section { padding-block: 1.4rem; }
   .topbar-inner { gap: 0.5rem; }
   .topnav a { padding: 0.3rem 0.45rem; font-size: 0.85rem; }
+  /* Room for the theme switch: the logo links to the overview too. */
+  .topnav [data-nav="home"] { display: none; }
   .kpis, .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
   .stats-page .charts, .stats-page .strips { grid-template-columns: minmax(0, 1fr); }
   .kpi { padding: 0.85rem 0.8rem; }
@@ -640,6 +652,9 @@ dialog::backdrop { background: rgb(0 0 0 / 0.4); }
 }
 @media (max-width: 400px) {
   .brand-text { display: none; }
+}
+@media (max-width: 360px) {
+  .theme-switch { --cell: 1.5rem; }
 }
 /* Forced colours drop backgrounds: the pressed buttons and current page are underlined, and
    the colour keys keep their colours. */

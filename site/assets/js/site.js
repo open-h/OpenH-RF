@@ -1391,21 +1391,28 @@
     return parts.filter(Boolean).join("\n").toLowerCase();
   }
 
-  // Follow the OS theme by default. The optional theme toggle can pin a choice.
+  // Follow the browser's theme, unless the switch in the top bar picks light or dark.
   function initTheme() {
-    const button = $("#theme-toggle");
     const root = document.documentElement;
-    const dark = () => root.dataset.theme === "dark" || (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
-    button.setAttribute("aria-pressed", dark());
-    button.onclick = () => {
-      root.dataset.theme = dark() ? "light" : "dark";
-      button.setAttribute("aria-pressed", dark());
-      try {
-        localStorage.setItem("theme", root.dataset.theme);
-      } catch {
-        // Blocked storage: the choice lasts for this page view.
-      }
+    const tint = () => {
+      const background = getComputedStyle(document.body).backgroundColor;
+      for (const meta of $$('meta[name="theme-color"]')) meta.content = background;
     };
+    for (const input of $$(".theme-switch input")) {
+      input.checked = input.value === (root.dataset.theme || "auto");
+      input.onchange = () => {
+        if (input.value === "auto") delete root.dataset.theme;
+        else root.dataset.theme = input.value;
+        try {
+          localStorage.setItem("theme", input.value);
+        } catch {
+          // Blocked storage: the choice lasts for this page view.
+        }
+        tint();
+      };
+    }
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", tint);
+    tint();
   }
 
   // Show RF image on mouse-over/touch. If not mousing over, show 4 random RF images, fading randomly.
