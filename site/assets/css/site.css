@@ -559,6 +559,18 @@ dialog::backdrop { background: rgb(0 0 0 / 0.4); }
 .drawer-body dl { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 0.4rem 1rem; margin: 0; font-size: 0.88rem; }
 .drawer-body dt { color: var(--text-2); }
 .drawer-body dd { margin: 0; overflow-wrap: anywhere; }
+.citations-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.25rem; }
+.citations { margin: 0; padding-left: 1.75rem; }
+ul.citations { padding: 0; list-style: none; }
+.citations li { padding-block: 0.8rem; }
+.citations li:first-child { padding-top: 0.25rem; }
+.citations li + li { border-top: 1px solid var(--border); }
+.citations li::marker { color: var(--text-2); }
+.citations p { margin: 0 0 0.45rem; }
+.cite-meta { color: var(--text-2); }
+.cite-title { font-weight: 500; }
+.cite-title a { color: inherit; }
+.citations .btn { margin-top: 0.2rem; }
 .card-summary { margin-block: 1em; }
 .card-list { margin: 0.3em 0 0; padding-left: 1.2em; }
 .scroll { overflow-x: auto; }

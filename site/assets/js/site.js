@@ -1175,11 +1175,33 @@
       ["Created", d.created],
       ["Known issues", d.known_issues],
       ["License", d.license?.toUpperCase()],
+      ["Citation", d.citations.length && citations(d.citations)],
       ["Frame rate", [rate && median(rate, hz), prf && `PRF ${median(prf, hz)}`].filter(Boolean).join("; ")],
       ["Imaging depth", depth && `${median(depth, fmt3)}${NBSP}cm`],
       ["zea version", versions.length === 1 ? versions[0] : countList(m.zea_version, "file")],
     ];
-    return el("dl", null, rows.filter(([, v]) => v).flatMap(([k, v]) => [el("dt", { text: k }), el("dd", null, cardText(v))]));
+    return el("dl", null, rows.filter(([, v]) => v).flatMap(([k, v]) => [el("dt", { text: k }), el("dd", null, typeof v === "string" ? cardText(v) : v)]));
+  }
+
+  function citations(entries) {
+    const copyButton = (text, bibtex) =>
+      el("button", { type: "button", class: "btn btn-ghost btn-small", text, onclick: () => copy(bibtex, "Copied to clipboard") });
+    const items = entries.map((c) =>
+      el(
+        "li",
+        null,
+        el("p", { class: "cite-meta", text: `${c.authors} (${c.year}).` }),
+        el("p", { class: "cite-title" }, c.link ? el("a", { href: c.link, target: "_blank", rel: "noopener", text: c.title }) : c.title),
+        el("p", { class: "cite-meta" }, el("i", { text: c.venue }), c.details ? ` ${c.details}.` : "."),
+        copyButton("Copy BibTeX", c.bibtex),
+      ),
+    );
+    if (items.length === 1) return el("ul", { class: "citations" }, items);
+    const all = entries.map((c) => c.bibtex).join("\n\n");
+    return [
+      el("div", { class: "citations-head" }, el("span", { class: "cite-meta", text: `${items.length} references` }), copyButton("Copy all BibTeX", all)),
+      el("ol", { class: "citations" }, items),
+    ];
   }
 
   // Scalars show their values; arrays their shapes, with the zea spec's axis names below.

@@ -120,6 +120,10 @@ port 8000 (all interfaces). `--check` only validates `catalog.yaml`.
   `institution` overrides in `catalog.yaml`) is in `institution_filters.csv` once, so that
   the page counts the same institutions everywhere.
 - `zea_keys.json` (the zea spec): `zea_keys.py`, run with the target zea version installed.
+- `citation_suggestions.bib`: the citations the data cards ask for, shown in each dataset's
+  details: the card's BibTeX, else an entry written from the citation it suggests. A
+  `% dataset:` line names the dataset (or collection) the entries below it are for. The
+  build warns about a card that asks to be cited and has no entry.
 - `metadata_fixes.md`: where the site corrects the metadata on the Hub (probe names, probe
   types, transmit schemes, institutions), and the fix at the source for each.
 - `assets/img/examples*` (the banner: the paper's collages as webp, and the tile frames the

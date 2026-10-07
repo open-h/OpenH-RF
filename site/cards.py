@@ -114,6 +114,8 @@ def parse(text: str) -> dict:
             dict.fromkeys(m.removeprefix("The ") for m in ORGANISATION.findall(contributors))
         ),
         "created": first_paragraph(sections.get("created", ""), 200),
+        # Whether the card asks to be cited, for build.py to check that it has the citation.
+        "cites": bool(re.search(r"^#+ .*citation|\bcite\b", text, re.M | re.I)),
         # HDF5 keys the card documents, such as `data/raw_data` or `/tracks/track_N/scan`.
         # File names (`data/a1.hdf5`) have a dot and do not match.
         "keys": sorted(

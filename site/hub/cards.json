@@ -26,6 +26,7 @@
     "University of Colorado Boulder"
    ],
    "created": "Data were collected between 08/23/2024 and 06/30/2026.",
+   "cites": false,
    "keys": [
     "metadata/probe_pose"
    ],
@@ -67,6 +68,7 @@
     "Concordia University"
    ],
    "created": "07/01/2026",
+   "cites": true,
    "keys": [
     "data/diverse_source_image",
     "data/diverse_source_image/coordinates",
@@ -136,6 +138,7 @@
     "University of Rochester Medical Center"
    ],
    "created": "07/04/2026",
+   "cites": true,
    "keys": [
     "custom/element_focus",
     "custom/phantom_z_idx",
@@ -206,6 +209,7 @@
     "Seoul National University Bundang Hospital"
    ],
    "created": "06/30/2026",
+   "cites": false,
    "keys": [],
    "known_issues": "- demodulation_frequency = 6 MHz is empirically tuned to the post-attenuation echo spectrum; the probe nameplate centre frequency is 10 MHz. Treat both as starting points for frequency-dependent imaging research.\n- sound_speed = 1540 m/s is a conventional default.\n- ADC saturation sentinels (int16 ±32768 from front-end transmit blanking) are preserved as-is in raw_data to keep the tensor bit-faithful.",
    "text": {
@@ -244,6 +248,7 @@
    ],
    "institutions": [],
    "created": "07/17/2026",
+   "cites": false,
    "keys": [
     "data/image/coordinates",
     "data/image/values",
@@ -300,6 +305,7 @@
     "NVIDIA Corporation"
    ],
    "created": "12/01/2025.",
+   "cites": true,
    "keys": [
     "data/bmode_focused",
     "data/image",
@@ -354,6 +360,7 @@
     "University of Oslo"
    ],
    "created": "06/23/2026 (packaging date; original acquisitions/simulations were produced between 2016 and 2023).",
+   "cites": true,
    "keys": [
     "data/raw_data",
     "probe/probe_geometry",
@@ -410,6 +417,7 @@
     "University of Oslo"
    ],
    "created": "06/23/2026 (packaging date; original acquisitions/simulations were produced between 2016 and 2023).",
+   "cites": true,
    "keys": [
     "data/raw_data",
     "probe/probe_geometry",
@@ -465,6 +473,7 @@
     "University of Oslo"
    ],
    "created": "06/23/2026 (packaging date; original acquisitions/simulations were produced between 2016 and 2023).",
+   "cites": true,
    "keys": [
     "data/raw_data",
     "probe/probe_geometry",
@@ -520,6 +529,7 @@
     "University of Oslo"
    ],
    "created": "06/23/2026 (packaging date; original acquisitions/simulations were produced between 2016 and 2023).",
+   "cites": true,
    "keys": [
     "data/raw_data",
     "probe/probe_geometry",
@@ -576,6 +586,7 @@
     "University of Oslo"
    ],
    "created": "06/23/2026 (packaging date; original acquisitions/simulations were produced between 2016 and 2023).",
+   "cites": true,
    "keys": [
     "data/raw_data",
     "probe/probe_geometry",
@@ -632,6 +643,7 @@
     "University of Oslo"
    ],
    "created": "06/23/2026 (packaging date; original acquisitions/simulations were produced between 2016 and 2023).",
+   "cites": true,
    "keys": [
     "data/raw_data",
     "probe/probe_geometry",
@@ -691,6 +703,7 @@
    ],
    "institutions": [],
    "created": "12/2023",
+   "cites": true,
    "keys": [
     "data/raw_data",
     "data/raw_data/image_das",
@@ -741,6 +754,7 @@
    ],
    "institutions": [],
    "created": "07/09/2026",
+   "cites": false,
    "keys": [
     "data/raw_data",
     "metadata/annotations/label",
@@ -804,6 +818,7 @@
    ],
    "institutions": [],
    "created": "06/15/2026",
+   "cites": false,
    "keys": [
     "data/raw_data",
     "metadata/annotations/label",
@@ -863,6 +878,7 @@
    ],
    "institutions": [],
    "created": "01/23/2026",
+   "cites": false,
    "keys": [
     "data/raw_data",
     "probe/probe_geometry",
@@ -923,6 +939,7 @@
    ],
    "institutions": [],
    "created": "07/09/2026",
+   "cites": false,
    "keys": [
     "data/raw_data",
     "probe/probe_geometry",
@@ -979,6 +996,7 @@
    ],
    "institutions": [],
    "created": "07/06/2026 (data card). Acquisition period: June 2025 – May 2026.",
+   "cites": false,
    "keys": [
     "custom/challenging",
     "custom/contact",
@@ -1052,6 +1070,7 @@
     "Stanford University"
    ],
    "created": "06/18/2025, the publication date of both source Figshare records.",
+   "cites": true,
    "keys": [
     "data/raw_data",
     "metadata/subject",
@@ -1113,6 +1132,7 @@
     "University of Basel"
    ],
    "created": "Clarius acquisitions: 19/06/2026 (phantom1_distal) and 25/06/2026 (phantom1_proximal). The other seven sweeps carry no recorded acquisition date, see Known Issues. Converted to the zea format in 2026.",
+   "cites": false,
    "keys": [
     "custom/ct/nrrd_header",
     "custom/ct/spacing",
@@ -1163,6 +1183,7 @@
     "Israel Institute of Technology"
    ],
    "created": "Source data 2018; converted to the OpenH-RF (zea) format 07/16/2026.",
+   "cites": false,
    "keys": [
     "data/raw_data",
     "metadata/credit",
@@ -1214,6 +1235,7 @@
     "Israel Institute of Technology"
    ],
    "created": "Acquired 2018; converted to the OpenH-RF (zea) format 07/16/2026.",
+   "cites": false,
    "keys": [
     "data/raw_data",
     "metadata/credit",
@@ -1265,6 +1287,7 @@
     "Israel Institute of Technology"
    ],
    "created": "Source data 2018; converted to the OpenH-RF (zea) format 07/16/2026.",
+   "cites": false,
    "keys": [
     "data/raw_data",
     "metadata/credit",
@@ -1310,6 +1333,7 @@
     "Tel Aviv University"
    ],
    "created": "16/06/2026",
+   "cites": false,
    "keys": [],
    "known_issues": "3D position data is not provided.",
    "text": {
@@ -1351,6 +1375,7 @@
     "Eindhoven University of Technology"
    ],
    "created": "July 2026",
+   "cites": false,
    "keys": [
     "metadata/credit",
     "metadata/subject"
@@ -1400,6 +1425,7 @@
     "Eindhoven University of Technology"
    ],
    "created": "The recordings were acquired in 2026.",
+   "cites": true,
    "keys": [
     "data/raw_data",
     "metadata/annotations/anatomy",
@@ -1464,6 +1490,7 @@
    ],
    "institutions": [],
    "created": "Nov 2023",
+   "cites": false,
    "keys": [
     "data/raw_data",
     "probe/name",
@@ -1525,6 +1552,7 @@
     "Technical University of Munich"
    ],
    "created": "07/16/2026",
+   "cites": false,
    "keys": [
     "custom/sweep_index",
     "data/image",
@@ -1576,6 +1604,7 @@
    ],
    "institutions": [],
    "created": "Data recorded on 01/19/2026. Dataset created on 07/09/2026.",
+   "cites": false,
    "keys": [
     "data/raw_data",
     "probe/element_width",
@@ -1632,6 +1661,7 @@
     "University of Twente"
    ],
    "created": "07/12/2026",
+   "cites": true,
    "keys": [
     "custom/bubble_R0",
     "custom/bubble_initial_r0",
@@ -1690,6 +1720,7 @@
     "University of Twente"
    ],
    "created": "07/01/2026",
+   "cites": false,
    "keys": [
     "probe/probe_geometry",
     "scan/sampling_frequency",
@@ -1751,6 +1782,7 @@
     "University of British Columbia"
    ],
    "created": "09/01/2026 for this corrected zea-beamformable synthetic-channel package. The source phantom acquisitions predate this packaging.",
+   "cites": false,
    "keys": [
     "custom/labels/factory_elasticity_kpa",
     "custom/simulation/scatterer_positions",
@@ -1820,6 +1852,7 @@
     "University of British Columbia"
    ],
    "created": "- Physical phantom acquisition: 06/12/2026.\n- Release preparation: 09/08/2026.",
+   "cites": true,
    "keys": [
     "custom/session_calibration/image_t_tracker",
     "custom/simulation/scatterer_magnitudes",
@@ -1904,6 +1937,7 @@
     "Polytechnique"
    ],
    "created": "08/21/2026 (zea conversion). The underlying acquisitions were recorded between March 2022 and March 2025.",
+   "cites": true,
    "keys": [
     "custom/density_map",
     "custom/mouse_animal_protocol_id",
@@ -1971,6 +2005,7 @@
     "Stanford University"
    ],
    "created": "03/19/2024.",
+   "cites": true,
    "keys": [
     "data/*/coordinates",
     "data/attenuation_map/values",
@@ -2052,6 +2087,7 @@
     "Iowa State University"
    ],
    "created": "05/18/2025 (initial public release of OpenPros).",
+   "cites": true,
    "keys": [],
    "known_issues": "- focus_distances, t0_delays, tx_apodizations, and related transmit fields are compatibility placeholders because the simulation uses external point sources rather than a conventional focused array transmission.",
    "text": {
@@ -2097,6 +2133,7 @@
    ],
    "institutions": [],
    "created": "09/07/2026",
+   "cites": false,
    "keys": [
     "data/raw_data"
    ],
@@ -2143,6 +2180,7 @@
     "Vanderbilt University"
    ],
    "created": "07/11/2026",
+   "cites": false,
    "keys": [
     "custom/legacy_metadata/imaging_view_name",
     "custom/legacy_metadata/notes",
@@ -2196,6 +2234,7 @@
     "University of Waterloo"
    ],
    "created": "07/16/2026",
+   "cites": true,
    "keys": [
     "data/color_doppler",
     "data/image",
@@ -2264,6 +2303,7 @@
     "University of Waterloo"
    ],
    "created": "08/20/2026",
+   "cites": true,
    "keys": [
     "data/color_doppler",
     "data/image",
@@ -2332,6 +2372,7 @@
     "University of Waterloo"
    ],
    "created": "07/12/2026",
+   "cites": true,
    "keys": [
     "custom/baecke_leisure_index",
     "custom/baecke_score",
@@ -2385,6 +2426,7 @@
    ],
    "institutions": [],
    "created": "Not specified by the contributors.",
+   "cites": false,
    "keys": [
     "metadata/subject/id",
     "metadata/subject/type"
@@ -2429,6 +2471,7 @@
     "Weizmann Institute of Science"
    ],
    "created": "07/07/2026",
+   "cites": false,
    "keys": [
     "custom/lens_correction",
     "data/raw_data",
@@ -2493,6 +2536,7 @@
     "Worcester Polytechnic Institute"
    ],
    "created": "06/15/2026",
+   "cites": true,
    "keys": [
     "custom/saf_bmode",
     "custom/saf_bmode/coordinates",

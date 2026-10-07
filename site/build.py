@@ -10,6 +10,7 @@ The site is plain HTML/CSS/JS (``site/index.html`` + ``site/assets/``) that rend
 * ``site/catalog.yaml``: the filters' vocabulary, and overrides for the few values
   derived here that are wrong;
 * ``site/zea_keys.json``: the zea file-format key tree, from ``zea_keys.py``;
+* ``site/citation_suggestions.bib``: the citations in the data cards;
 * ``plots/openh_rf_datasets.py``: each dataset's short name, which the page shows and
   links it by.
 
@@ -54,6 +55,7 @@ DATASET_NAMES = SITE.parent / "plots" / "openh_rf_datasets.py"
 COMPILE_AUTHORS = SITE.parent / "scripts" / "compile_authors.py"
 AUTHOR_WEBSITES = SITE / "author_websites.csv"
 INSTITUTION_FILTERS = SITE / "institution_filters.csv"
+CITATIONS = SITE / "citation_suggestions.bib"
 # Where index.html takes the author list.
 AUTHORS_MARK = "<!-- authors -->"
 
@@ -187,6 +189,79 @@ def authors_html(institutions: set[str]) -> str:
         raise SystemExit("institution problems:\n  " + "\n  ".join(problems))
     places = ", ".join(places)
     return f'{listed}<p class="authors-affiliations">{places}</p>'
+
+
+@functools.cache
+def citations() -> dict[str, list[dict]]:
+    """The BibTeX in citation_suggestions.bib for each dataset or collection."""
+    text = CITATIONS.read_text(encoding="utf-8")
+    found = {}
+    for names, block in re.findall(
+        r"^% dataset: ([^\n]+)\n(.*?)(?=^% dataset:|\Z)", text, re.M | re.S
+    ):
+        entries = [citation(e.strip()) for e in re.split(r"^(?=@)", block, flags=re.M)[1:]]
+        for name in names.split():
+            found[name] = entries
+    return found
+
+
+def citation(entry: str) -> dict:
+    fields = bib_fields(entry)
+
+    def get(name: str) -> str:
+        return latex(fields.get(name, ""))
+
+    # split on "and" outside braces
+    names = re.split(r"\s+and\s+(?![^{]*\})", fields.get("author", ""))
+    authors = [bib_name(n) for n in names if n != "others"]
+    shown = f"{authors[0]} et al." if len(authors) > 2 or "others" in names else "; ".join(authors)
+    venue = get("journal") or get("booktitle") or get("publisher") or get("archiveprefix")
+    if "school" in fields:
+        venue = f"PhD thesis, {get('school')}"
+    volume = get("volume")
+    if "number" in fields:
+        volume += f" ({get('number')})"
+    pages = get("pages").replace("-", "–")
+    details = ": ".join(part for part in (volume, pages) if part)
+    doi = re.sub(r"^https?://(dx\.)?doi\.org/", "", fields.get("doi", ""))
+    return {
+        "authors": shown,
+        "year": get("year"),
+        "title": get("title"),
+        "venue": venue,
+        "details": details or get("eprint"),
+        "link": f"https://doi.org/{doi}" if doi else fields.get("url"),
+        "bibtex": entry,
+    }
+
+
+def bib_fields(entry: str) -> dict[str, str]:
+    """The fields of a BibTeX entry by lower-case name."""
+    fields = {}
+    for line in entry.rstrip().removesuffix("}").splitlines()[1:]:
+        if not line.strip():
+            continue
+        m = re.fullmatch(r"\s*(\w+)\s*=\s*\{?(.*?)\}?,?\s*", line)
+        if not m:
+            raise SystemExit(f"{CITATIONS.name}: put each field on one line: {line!r}")
+        fields[m[1].lower()] = m[2]
+    return fields
+
+
+def bib_name(name: str) -> str:
+    split = re.fullmatch(r"(.+?)\s+(\{[^}]*\}|\S+)", name)
+    if "," in name or name.startswith("{") or not split:
+        return latex(name)
+    return f"{latex(split[2])}, {latex(split[1])}"
+
+
+def latex(text: str) -> str:
+    text = re.sub(r"\\url\{([^}]*)\}", r"\1", text)
+    text = text.replace(r"{\o}", "ø").replace(r"\&", "&").replace("--", "–")
+    text = " ".join(text.replace("{", "").replace("}", "").split())
+    if "\\" in text:
+        raise SystemExit(f"{CITATIONS.name}: add the LaTeX in {text!r} to build.latex()")
+    return text
 
 
 def validate(catalog: dict) -> list[str]:
@@ -363,6 +438,9 @@ def build_records(catalog: dict, cards: dict, corpus: dict, zea: dict) -> list[d
         # search and the institution filter use.
         main = record["institution"].split(" & ") if record["institution"] else []
         record["institutions"] = main + record["collaborating_institutions"]
+        record["citations"] = citations().get(eid) or citations().get(card["collection"]) or []
+        if card["cites"] and not record["citations"]:
+            print(f"warning: {eid} asks to be cited, but has no entry in {CITATIONS.name}")
         layout = measured.pop("layout")
         record["measured"] = measured
         record["files"] = file_layout(layout, record["keys"], zea["keys"])
@@ -370,6 +448,9 @@ def build_records(catalog: dict, cards: dict, corpus: dict, zea: dict) -> list[d
         record["key_products"] = list(dict.fromkeys(filter(None, map(key_product, keys))))
         record["nonstandard_keys"] = [k for k in keys if not is_standard_key(k, zea["keys"])]
         records.append(record)
+    unknown = citations().keys() - {r["id"] for r in records} - set(cards["collections"])
+    if unknown:
+        raise SystemExit(f"{CITATIONS.name}: no dataset {', '.join(sorted(unknown))}")
     return records
 
 
